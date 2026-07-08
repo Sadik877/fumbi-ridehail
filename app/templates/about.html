@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}About — {{ app_name }}{% endblock %}
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<section class="max-w-4xl mx-auto px-5 sm:px-8 py-16 sm:py-20 text-center">
+  <p class="eyebrow mb-4">Our story</p>
+  <h1 class="font-display text-4xl sm:text-5xl font-semibold tracking-tight mb-6">Building the transport layer for African cities.</h1>
+  <p class="text-ink-500 dark:text-ink-400 leading-relaxed max-w-2xl mx-auto">
+    Fumbi started in 2021 with a simple observation: the biggest ride-hailing apps were built for cities they'd never driven in. Unnamed roads, informal addresses, and cash-first economies needed a platform designed around them — not retrofitted for them. Today we operate across 18 cities, connecting riders and senders with drivers who know their streets better than any algorithm.
+  </p>
+</section>
+
+<section class="route-thread max-w-7xl mx-auto"></section>
+
+<section class="max-w-7xl mx-auto px-5 sm:px-8 py-16">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {% for stat in stats %}
+    <div class="text-center">
+      <p class="font-display text-3xl sm:text-4xl font-semibold">{{ stat.value }}</p>
+      <p class="text-sm text-ink-500 dark:text-ink-400 mt-1">{{ stat.label }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="bg-white dark:bg-ink-900 border-y border-ink-100 dark:border-ink-800">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-20 grid md:grid-cols-3 gap-8">
+    <div>
+      <h3 class="font-display font-semibold text-lg mb-2">Our mission</h3>
+      <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">To make movement — of people and things — reliable, fair, and dignified across every city we operate in.</p>
+    </div>
+    <div>
+      <h3 class="font-display font-semibold text-lg mb-2">How we work</h3>
+      <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">Local teams in every city set pricing and safety standards specific to that market, backed by one shared platform.</p>
+    </div>
+    <div>
+      <h3 class="font-display font-semibold text-lg mb-2">Where we're headed</h3>
+      <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">Ten new cities by 2027, and a driver-owned vehicle financing program launching this year.</p>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 text-center">
+  <h2 class="section-heading mb-4">Want to build this with us?</h2>
+  <p class="text-ink-500 dark:text-ink-400 mb-8">We're hiring across engineering, operations, and city launch teams.</p>
+  <a href="{{ url_for('main.contact') }}" class="btn-primary">Get in touch</a>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}

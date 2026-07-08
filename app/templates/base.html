@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ app_name }} — {{ app_tagline }}{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}Fumbi is premium ride-hailing and delivery, built for African cities. Book a ride or send a parcel in seconds.{% endblock %}">
+
+<!-- Fonts: Space Grotesk (display) + Inter (body) + IBM Plex Mono (data/utility) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<!-- Tailwind (JIT, in-browser) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          canopy: {
+            50:  '#eafbf4',
+            100: '#c9f3e0',
+            200: '#93e6c1',
+            300: '#57d29e',
+            400: '#2fdd8f',
+            500: '#0f9d63',
+            600: '#0b6e4f',
+            700: '#0a5941',
+            800: '#0a4634',
+            900: '#08392b',
+          },
+          ink: {
+            50:  '#f4f5f5',
+            100: '#e4e6e6',
+            200: '#c7cbca',
+            300: '#a3a9a7',
+            400: '#767d7a',
+            500: '#5b6660',
+            600: '#454e49',
+            700: '#313835',
+            800: '#202523',
+            900: '#14171a',
+            950: '#0c0e10',
+          },
+          sand: {
+            50: '#fbfbfa',
+            100: '#f7f8f6',
+            200: '#eef0ec',
+          },
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+          body: ['"Inter"', 'system-ui', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        },
+        boxShadow: {
+          soft: '0 1px 2px rgba(20,23,26,0.04), 0 8px 24px -8px rgba(20,23,26,0.10)',
+          lift: '0 4px 8px rgba(20,23,26,0.04), 0 16px 40px -12px rgba(20,23,26,0.18)',
+          glow: '0 0 0 1px rgba(15,157,99,0.15), 0 8px 30px -8px rgba(15,157,99,0.35)',
+        },
+        borderRadius: {
+          xl2: '1.25rem',
+        },
+      },
+    },
+  };
+</script>
+
+<!-- Component layer: written as Tailwind utilities via @apply so every
+     button/card/input in the app stays visually consistent from one
+     class name, instead of copy-pasting long utility strings everywhere. -->
+<style type="text/tailwindcss">
+  @layer components {
+    .btn {
+      @apply inline-flex items-center justify-center gap-2 rounded-full font-medium text-sm px-5 py-3 transition-all duration-200 ease-out select-none disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-canopy-500;
+    }
+    .btn-primary {
+      @apply btn bg-ink-900 text-white hover:bg-canopy-600 active:scale-[0.97] shadow-soft hover:shadow-lift dark:bg-canopy-500 dark:text-ink-950 dark:hover:bg-canopy-400;
+    }
+    .btn-accent {
+      @apply btn bg-canopy-500 text-ink-950 hover:bg-canopy-400 active:scale-[0.97] shadow-glow;
+    }
+    .btn-secondary {
+      @apply btn bg-white text-ink-900 border border-ink-200 hover:border-ink-900 active:scale-[0.97] dark:bg-ink-800 dark:text-sand-100 dark:border-ink-700 dark:hover:border-canopy-400;
+    }
+    .btn-ghost {
+      @apply btn bg-transparent text-ink-700 hover:bg-ink-100 dark:text-ink-200 dark:hover:bg-ink-800;
+    }
+    .card {
+      @apply bg-white dark:bg-ink-900 border border-ink-100 dark:border-ink-800 rounded-2xl shadow-soft;
+    }
+    .input {
+      @apply w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-sm text-ink-900 dark:text-sand-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-canopy-500 focus:border-transparent transition-shadow duration-150;
+    }
+    .label {
+      @apply block text-xs font-semibold uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-2;
+    }
+    .badge {
+      @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+    }
+    .badge-success { @apply badge bg-canopy-50 text-canopy-700 dark:bg-canopy-900/40 dark:text-canopy-300; }
+    .badge-neutral { @apply badge bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-300; }
+    .badge-warning { @apply badge bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300; }
+    .badge-danger  { @apply badge bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300; }
+    .eyebrow {
+      @apply font-mono text-xs uppercase tracking-[0.18em] text-canopy-600 dark:text-canopy-400;
+    }
+    .section-heading {
+      @apply font-display text-3xl sm:text-4xl font-semibold tracking-tight text-ink-900 dark:text-sand-100;
+    }
+    .nav-link {
+      @apply text-sm font-medium text-ink-600 hover:text-ink-900 dark:text-ink-300 dark:hover:text-white transition-colors duration-150;
+    }
+    .sidebar-link {
+      @apply flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-900 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white transition-colors duration-150;
+    }
+    .sidebar-link-active {
+      @apply sidebar-link bg-canopy-50 text-canopy-700 hover:bg-canopy-50 hover:text-canopy-700 dark:bg-canopy-900/30 dark:text-canopy-300 dark:hover:bg-canopy-900/30 dark:hover:text-canopy-300;
+    }
+  }
+</style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% block head %}{% endblock %}
+</head>
+<body class="bg-sand-100 dark:bg-ink-950 text-ink-900 dark:text-sand-100 font-body antialiased transition-colors duration-300">
+
+{% block body %}{% endblock %}
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+<script>lucide.createIcons();</script>
+</body>
+</html>

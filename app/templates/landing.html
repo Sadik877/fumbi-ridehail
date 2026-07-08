@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }} — Ride and delivery, built for African cities{% endblock %}
+
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<!-- ================= HERO ================= -->
+<section class="relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+
+      <!-- Left: copy + booking widget -->
+      <div data-reveal>
+        <p class="eyebrow mb-4">Now live in 18 cities</p>
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.4rem] leading-[1.05] font-semibold tracking-tight text-ink-900 dark:text-white">
+          Get moving. <span class="text-canopy-600 dark:text-canopy-400">Get it delivered.</span>
+        </h1>
+        <p class="mt-5 text-base sm:text-lg text-ink-500 dark:text-ink-300 max-w-md leading-relaxed">
+          Fumbi pairs you with verified drivers in seconds — for the trip across town, or the parcel that has to get there today.
+        </p>
+
+        <!-- Booking widget -->
+        <div class="card mt-8 p-2 max-w-lg">
+          <div data-tabs class="flex gap-1 p-1">
+            <button data-tab="ride" class="is-active flex-1 rounded-xl py-2.5 text-sm font-medium transition-colors data-tab-btn" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-ink-900','text-white','dark:bg-canopy-500','dark:text-ink-950')); this.classList.add('bg-ink-900','text-white','dark:bg-canopy-500','dark:text-ink-950')">
+              <i data-lucide="car" class="w-4 h-4 inline -mt-0.5 mr-1.5"></i>Ride
+            </button>
+            <button data-tab="delivery" class="flex-1 rounded-xl py-2.5 text-sm font-medium transition-colors text-ink-500 dark:text-ink-300" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-ink-900','text-white','dark:bg-canopy-500','dark:text-ink-950')); this.classList.add('bg-ink-900','text-white','dark:bg-canopy-500','dark:text-ink-950')">
+              <i data-lucide="package" class="w-4 h-4 inline -mt-0.5 mr-1.5"></i>Delivery
+            </button>
+          </div>
+
+          <div class="p-4 pt-2">
+            <div data-tab-panel="ride" class="space-y-3">
+              <div class="relative">
+                <div class="absolute left-4 top-0 bottom-0 flex flex-col items-center justify-between py-4">
+                  <span class="w-2 h-2 rounded-full bg-canopy-500"></span>
+                  <span class="w-px flex-1 border-l border-dashed border-ink-300 dark:border-ink-600 my-1"></span>
+                  <span class="w-2 h-2 rounded-sm bg-ink-900 dark:bg-white"></span>
+                </div>
+                <div class="pl-10 space-y-2">
+                  <input type="text" placeholder="Pickup location" class="input" value="Borrowdale, Harare">
+                  <input type="text" placeholder="Where to?" class="input">
+                </div>
+              </div>
+              <a href="{{ url_for('booking.ride') }}" class="btn-accent w-full">See prices <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+            </div>
+            <div data-tab-panel="delivery" class="space-y-3 hidden">
+              <input type="text" placeholder="Pickup address" class="input" value="Newlands, Harare">
+              <input type="text" placeholder="Drop-off address" class="input">
+              <a href="{{ url_for('booking.delivery') }}" class="btn-accent w-full">Get a delivery quote <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 mt-6 text-sm text-ink-500 dark:text-ink-400">
+          <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-canopy-600"></i>Verified drivers</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="star" class="w-4 h-4 text-canopy-600"></i>4.9 average rating</span>
+        </div>
+      </div>
+
+      <!-- Right: live map preview -->
+      <div data-reveal data-reveal-delay="150" class="relative">
+        <div class="card p-4 sm:p-5 relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <span class="flex items-center gap-2 text-sm font-medium">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-canopy-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-canopy-500"></span>
+              </span>
+              Live coverage — Harare
+            </span>
+            <span class="badge-neutral font-mono">214 drivers nearby</span>
+          </div>
+
+          <div class="relative rounded-xl overflow-hidden aspect-[4/5] sm:aspect-square bg-ink-100 dark:bg-ink-800">
+            <!-- Stylized map grid -->
+            <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full">
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" class="text-ink-200 dark:text-ink-700"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="400" fill="url(#grid)" />
+
+              <!-- Route path -->
+              <path id="routePath" d="M 40,340 C 120,300 100,180 200,160 S 320,80 360,50" fill="none" stroke="#0f9d63" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10" opacity="0.9"/>
+
+              <!-- Start / end markers -->
+              <circle cx="40" cy="340" r="6" fill="#14171a" class="dark:fill-white"/>
+              <circle cx="360" cy="50" r="6" fill="#0f9d63"/>
+
+              <!-- Moving car marker -->
+              <circle r="7" fill="#ffffff" stroke="#0f9d63" stroke-width="3">
+                <animateMotion dur="4s" repeatCount="indefinite" rotate="auto">
+                  <mpath href="#routePath"/>
+                </animateMotion>
+              </circle>
+
+              <!-- Ambient driver dots -->
+              <circle cx="120" cy="120" r="4" fill="#0f9d63" opacity="0.5"/>
+              <circle cx="260" cy="260" r="4" fill="#0f9d63" opacity="0.5"/>
+              <circle cx="90" cy="220" r="4" fill="#0f9d63" opacity="0.5"/>
+              <circle cx="310" cy="150" r="4" fill="#0f9d63" opacity="0.5"/>
+            </svg>
+
+            <div class="absolute bottom-3 left-3 right-3 card !bg-white/95 dark:!bg-ink-900/95 !rounded-xl px-3 py-2.5 flex items-center gap-3 shadow-lift">
+              <div class="w-8 h-8 rounded-full bg-canopy-500 flex items-center justify-center shrink-0">
+                <i data-lucide="navigation" class="w-4 h-4 text-ink-950"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-medium truncate">Tendai is 3 minutes away</p>
+                <p class="text-[11px] text-ink-400">White Toyota Axio · AEX 4471</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="route-thread"></div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="max-w-7xl mx-auto px-5 sm:px-8 py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {% for stat in stats %}
+    <div data-reveal data-reveal-delay="{{ loop.index0 * 80 }}" class="text-center sm:text-left">
+      <p class="font-display text-3xl sm:text-4xl font-semibold text-ink-900 dark:text-white">{{ stat.value }}</p>
+      <p class="text-sm text-ink-500 dark:text-ink-400 mt-1">{{ stat.label }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ================= WHY CHOOSE US ================= -->
+<section class="bg-white dark:bg-ink-900 border-y border-ink-100 dark:border-ink-800">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-20">
+    <div class="max-w-2xl mb-14" data-reveal>
+      <p class="eyebrow mb-3">Why choose Fumbi</p>
+      <h2 class="section-heading">Built differently, for roads international apps don't understand.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      {% for item in why_us %}
+      <div data-reveal data-reveal-delay="{{ loop.index0 * 100 }}" class="border-t-2 border-canopy-500 pt-5">
+        <h3 class="font-display font-semibold text-lg mb-2">{{ item.title }}</h3>
+        <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">{{ item.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="max-w-7xl mx-auto px-5 sm:px-8 py-20">
+  <div class="max-w-2xl mb-14" data-reveal>
+    <p class="eyebrow mb-3">Everything you need</p>
+    <h2 class="section-heading">One app. Every trip, every parcel.</h2>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for f in features %}
+    <div data-reveal data-reveal-delay="{{ loop.index0 * 60 }}" class="card p-6 hover:shadow-lift hover:-translate-y-0.5 transition-all duration-300">
+      <div class="w-11 h-11 rounded-xl bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center mb-4">
+        <i data-lucide="{{ f.icon }}" class="w-5 h-5 text-canopy-600 dark:text-canopy-400"></i>
+      </div>
+      <h3 class="font-display font-semibold text-base mb-1.5">{{ f.title }}</h3>
+      <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">{{ f.text }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="bg-ink-950 text-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-20">
+    <div class="max-w-2xl mb-14" data-reveal>
+      <p class="eyebrow mb-3">Trusted across the continent</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-white">What riders and drivers say</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5">
+      {% for t in testimonials %}
+      <div data-reveal data-reveal-delay="{{ loop.index0 * 100 }}" class="bg-ink-900 border border-ink-800 rounded-2xl p-6">
+        <div class="flex gap-0.5 mb-4">
+          {% for _ in range(5) %}<i data-lucide="star" class="w-3.5 h-3.5 fill-canopy-400 text-canopy-400"></i>{% endfor %}
+        </div>
+        <p class="text-sm text-ink-200 leading-relaxed mb-5">&ldquo;{{ t.quote }}&rdquo;</p>
+        <p class="text-sm font-medium">{{ t.name }} <span class="text-ink-500 font-normal">— {{ t.role }}</span></p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="max-w-4xl mx-auto px-5 sm:px-8 py-20">
+  <div class="max-w-2xl mb-10" data-reveal>
+    <p class="eyebrow mb-3">Questions</p>
+    <h2 class="section-heading">Frequently asked</h2>
+  </div>
+  <div class="space-y-3">
+    {% for item in faqs %}
+    <details class="card p-5 group [&_summary::-webkit-details-marker]:hidden">
+      <summary class="flex items-center justify-between cursor-pointer list-none">
+        <span class="font-medium text-sm sm:text-base pr-4">{{ item.q }}</span>
+        <i data-lucide="plus" class="w-4 h-4 shrink-0 transition-transform duration-200 group-open:rotate-45 text-canopy-600"></i>
+      </summary>
+      <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed mt-3">{{ item.a }}</p>
+    </details>
+    {% endfor %}
+  </div>
+  <a href="{{ url_for('main.faq') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-canopy-600 dark:text-canopy-400 mt-6 hover:gap-2.5 transition-all">
+    View all questions <i data-lucide="arrow-right" class="w-4 h-4"></i>
+  </a>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
+  <div data-reveal class="rounded-3xl bg-gradient-to-br from-ink-900 to-canopy-800 dark:from-ink-900 dark:to-canopy-900 px-8 sm:px-14 py-14 sm:py-16 text-center relative overflow-hidden">
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold text-white mb-3">Ready to move?</h2>
+    <p class="text-ink-200 max-w-md mx-auto mb-8">Download Fumbi and get your first ride at 40% off — or start earning as a driver today.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="{{ url_for('auth.register') }}" class="btn-accent">Create an account</a>
+      <a href="{{ url_for('auth.driver_register') }}" class="btn-secondary !bg-transparent !text-white !border-ink-700 hover:!border-canopy-400">Become a driver</a>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Booking widget tab panels (hero widget uses the same data-tabs pattern as app.js)
+  document.querySelectorAll('[data-tabs]').forEach((group) => {
+    group.querySelectorAll('[data-tab]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const target = trigger.dataset.tab;
+        group.querySelectorAll('[data-tab-panel]').forEach((panel) => {
+          panel.classList.toggle('hidden', panel.dataset.tabPanel !== target);
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}
