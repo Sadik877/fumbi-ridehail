@@ -1,0 +1,96 @@
+{% extends "dashboard/_dashboard_base.html" %}
+{% block title %}Wallet — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Wallet{% endblock %}
+
+{% block dashboard_content %}
+<div class="grid lg:grid-cols-3 gap-6 mb-8">
+  <!-- Balance card -->
+  <div class="lg:col-span-2 rounded-2xl bg-gradient-to-br from-ink-900 to-canopy-900 p-7 text-white relative overflow-hidden">
+    <div class="absolute -bottom-16 -right-10 w-56 h-56 rounded-full bg-canopy-500/10 blur-2xl"></div>
+    <p class="text-ink-300 text-sm mb-2 relative z-10">Available balance</p>
+    <p class="font-mono text-4xl font-semibold mb-6 relative z-10">${{ "%.2f"|format(wallet.balance) }}</p>
+    <div class="flex items-center gap-3 relative z-10">
+      <button onclick="openTopUp()" class="btn-accent">Top up <i data-lucide="plus" class="w-4 h-4"></i></button>
+      <button class="btn-secondary !bg-transparent !text-white !border-ink-700 hover:!border-canopy-400">Withdraw</button>
+    </div>
+    <p class="text-xs text-ink-400 mt-6 relative z-10">${{ "%.2f"|format(wallet.pending) }} pending clearance</p>
+  </div>
+
+  <!-- Payment methods -->
+  <div class="card p-6">
+    <h3 class="font-display font-semibold mb-4">Payment methods</h3>
+    <div class="space-y-3">
+      <div class="flex items-center gap-3 rounded-xl border border-ink-100 dark:border-ink-800 p-3">
+        <i data-lucide="smartphone" class="w-4 h-4 text-canopy-600"></i>
+        <span class="text-sm flex-1">Mobile Money</span>
+        <span class="badge-success">Default</span>
+      </div>
+      <div class="flex items-center gap-3 rounded-xl border border-ink-100 dark:border-ink-800 p-3">
+        <i data-lucide="credit-card" class="w-4 h-4 text-ink-400"></i>
+        <span class="text-sm flex-1">Visa •••• 4471</span>
+      </div>
+      <button class="flex items-center gap-2 text-sm font-medium text-canopy-600 dark:text-canopy-400 pt-1">
+        <i data-lucide="plus" class="w-4 h-4"></i> Add payment method
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Transactions -->
+<div class="card overflow-hidden">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-ink-100 dark:border-ink-800">
+    <h3 class="font-display font-semibold">Transaction history</h3>
+    <button class="btn-ghost !px-3 !py-2 text-xs"><i data-lucide="download" class="w-4 h-4"></i>Export</button>
+  </div>
+  <div class="divide-y divide-ink-50 dark:divide-ink-800/60">
+    {% for t in transactions %}
+    <div class="flex items-center gap-4 px-6 py-4">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0
+        {{ 'bg-canopy-50 dark:bg-canopy-900/30' if t.type == 'credit' else 'bg-ink-100 dark:bg-ink-800' }}">
+        <i data-lucide="{{ 'arrow-down-left' if t.type == 'credit' else 'arrow-up-right' }}"
+           class="w-4 h-4 {{ 'text-canopy-600 dark:text-canopy-400' if t.type == 'credit' else 'text-ink-500 dark:text-ink-300' }}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ t.label }}</p>
+        <p class="text-xs text-ink-400">{{ t.date }}</p>
+      </div>
+      <span class="font-mono text-sm font-semibold {{ 'text-canopy-600 dark:text-canopy-400' if t.type == 'credit' else 'text-ink-700 dark:text-ink-200' }}">
+        {{ '+' if t.type == 'credit' else '-' }}${{ "%.2f"|format(t.amount) }}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Top-up modal -->
+<div id="topUpModal" class="hidden fixed inset-0 z-[70] items-center justify-center p-4">
+  <div class="absolute inset-0 bg-ink-950/50 backdrop-blur-sm" onclick="closeTopUp()"></div>
+  <div class="card relative w-full max-w-sm p-6">
+    <h3 class="font-display font-semibold text-lg mb-1">Top up your wallet</h3>
+    <p class="text-sm text-ink-500 dark:text-ink-400 mb-5">Funds are available instantly.</p>
+    <div class="grid grid-cols-3 gap-2 mb-4">
+      {% for amt in [10, 25, 50] %}
+      <button class="btn-secondary !py-2.5" onclick="document.getElementById('topUpAmount').value={{ amt }}">${{ amt }}</button>
+      {% endfor %}
+    </div>
+    <label class="label">Amount</label>
+    <input id="topUpAmount" type="number" class="input mb-5" placeholder="Enter amount">
+    <button class="btn-primary w-full" onclick="closeTopUp(); showToast('Wallet topped up successfully')">Confirm top-up</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openTopUp() {
+    const modal = document.getElementById('topUpModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  function closeTopUp() {
+    const modal = document.getElementById('topUpModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+</script>
+{% endblock %}

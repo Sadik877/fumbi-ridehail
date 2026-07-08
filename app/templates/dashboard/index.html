@@ -1,0 +1,120 @@
+{% extends "dashboard/_dashboard_base.html" %}
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-8">
+  <h2 class="font-display text-2xl font-semibold">Good to see you, {{ user.name.split(' ')[0] }}.</h2>
+  <p class="text-sm text-ink-500 dark:text-ink-400 mt-1">Here's what's happening with your account.</p>
+</div>
+
+<!-- Quick actions -->
+<div class="grid sm:grid-cols-2 gap-4 mb-8">
+  <a href="{{ url_for('booking.ride') }}" class="card p-5 flex items-center gap-4 hover:shadow-lift hover:-translate-y-0.5 transition-all duration-300 group">
+    <div class="w-12 h-12 rounded-xl bg-ink-900 dark:bg-canopy-500 flex items-center justify-center shrink-0">
+      <i data-lucide="car" class="w-5 h-5 text-white dark:text-ink-950"></i>
+    </div>
+    <div class="flex-1">
+      <p class="font-medium">Book a ride</p>
+      <p class="text-xs text-ink-400">Get moving in seconds</p>
+    </div>
+    <i data-lucide="arrow-right" class="w-4 h-4 text-ink-300 group-hover:translate-x-1 transition-transform"></i>
+  </a>
+  <a href="{{ url_for('booking.delivery') }}" class="card p-5 flex items-center gap-4 hover:shadow-lift hover:-translate-y-0.5 transition-all duration-300 group">
+    <div class="w-12 h-12 rounded-xl bg-canopy-500 flex items-center justify-center shrink-0">
+      <i data-lucide="package" class="w-5 h-5 text-ink-950"></i>
+    </div>
+    <div class="flex-1">
+      <p class="font-medium">Send a delivery</p>
+      <p class="text-xs text-ink-400">Same-day, tracked door to door</p>
+    </div>
+    <i data-lucide="arrow-right" class="w-4 h-4 text-ink-300 group-hover:translate-x-1 transition-transform"></i>
+  </a>
+</div>
+
+<!-- Stat cards -->
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="card p-5">
+    <p class="text-xs text-ink-400 mb-2">Total trips</p>
+    <p class="font-mono text-2xl font-semibold">{{ summary.total_trips }}</p>
+  </div>
+  <div class="card p-5">
+    <p class="text-xs text-ink-400 mb-2">Total spent</p>
+    <p class="font-mono text-2xl font-semibold">${{ "%.2f"|format(summary.total_spent) }}</p>
+  </div>
+  <div class="card p-5">
+    <p class="text-xs text-ink-400 mb-2">CO₂ saved</p>
+    <p class="font-mono text-2xl font-semibold">{{ summary.co2_saved_kg }}kg</p>
+  </div>
+  <div class="card p-5">
+    <p class="text-xs text-ink-400 mb-2">Wallet balance</p>
+    <p class="font-mono text-2xl font-semibold text-canopy-600 dark:text-canopy-400">${{ "%.2f"|format(wallet.balance) }}</p>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Activity chart -->
+  <div class="card p-6 lg:col-span-2">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="font-display font-semibold">Trip activity</h3>
+      <span class="badge-neutral">Last 7 days</span>
+    </div>
+    <div class="flex items-end justify-between gap-3 h-40">
+      {% set days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+      {% for val in activity %}
+      <div class="flex-1 flex flex-col items-center gap-2 group">
+        <div class="w-full rounded-lg bg-ink-100 dark:bg-ink-800 relative overflow-hidden" style="height: 100%;">
+          <div class="absolute bottom-0 left-0 right-0 rounded-lg bg-canopy-500 group-hover:bg-canopy-400 transition-all duration-500"
+               style="height: {{ (val / (activity|max)) * 100 }}%;"></div>
+        </div>
+        <span class="text-[11px] text-ink-400">{{ days[loop.index0] }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Notifications preview -->
+  <div class="card p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display font-semibold">Notifications</h3>
+      <a href="{{ url_for('dashboard.notifications') }}" class="text-xs font-medium text-canopy-600 dark:text-canopy-400 hover:underline">View all</a>
+    </div>
+    <div class="space-y-4">
+      {% for n in notifications %}
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-lg bg-ink-100 dark:bg-ink-800 flex items-center justify-center shrink-0 mt-0.5">
+          <i data-lucide="{{ n.icon }}" class="w-4 h-4 text-ink-500 dark:text-ink-300"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium truncate">{{ n.title }}</p>
+          <p class="text-xs text-ink-400 line-clamp-2">{{ n.text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Recent bookings -->
+<div class="card mt-6 overflow-hidden">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-ink-100 dark:border-ink-800">
+    <h3 class="font-display font-semibold">Recent bookings</h3>
+    <a href="{{ url_for('booking.history') }}" class="text-xs font-medium text-canopy-600 dark:text-canopy-400 hover:underline">View all</a>
+  </div>
+  <div class="divide-y divide-ink-50 dark:divide-ink-800/60">
+    {% for b in bookings %}
+    <div class="flex items-center gap-4 px-6 py-4 hover:bg-ink-50/60 dark:hover:bg-ink-800/40 transition-colors">
+      <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center shrink-0">
+        <i data-lucide="{{ 'car' if b.type == 'ride' else 'package' }}" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ b.from_ }} → {{ b.to }}</p>
+        <p class="text-xs text-ink-400">{{ b.date }} · {{ b.time }}</p>
+      </div>
+      <span class="font-mono text-sm font-medium hidden sm:inline">{{ "$%.2f"|format(b.fare) if b.fare else '—' }}</span>
+      {% if b.status == 'completed' %}<span class="badge-success">Completed</span>{% else %}<span class="badge-danger">Cancelled</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

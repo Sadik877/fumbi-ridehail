@@ -1,0 +1,38 @@
+{% extends "dashboard/_dashboard_base.html" %}
+{% block title %}Notifications — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Notifications{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex items-center justify-between mb-6">
+  <p class="text-sm text-ink-500 dark:text-ink-400">{{ notifications|selectattr('unread')|list|length }} unread</p>
+  <button class="text-sm font-medium text-canopy-600 dark:text-canopy-400 hover:underline">Mark all as read</button>
+</div>
+
+{% if notifications %}
+<div class="card overflow-hidden divide-y divide-ink-50 dark:divide-ink-800/60">
+  {% for n in notifications %}
+  <div class="flex items-start gap-4 px-5 sm:px-6 py-5 {{ 'bg-canopy-50/40 dark:bg-canopy-900/10' if n.unread else '' }} hover:bg-ink-50/60 dark:hover:bg-ink-800/40 transition-colors">
+    <div class="w-10 h-10 rounded-xl bg-ink-100 dark:bg-ink-800 flex items-center justify-center shrink-0">
+      <i data-lucide="{{ n.icon }}" class="w-4 h-4 text-ink-500 dark:text-ink-300"></i>
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center gap-2">
+        <p class="text-sm font-medium">{{ n.title }}</p>
+        {% if n.unread %}<span class="w-1.5 h-1.5 rounded-full bg-canopy-500 shrink-0"></span>{% endif %}
+      </div>
+      <p class="text-sm text-ink-500 dark:text-ink-400 mt-0.5 leading-relaxed">{{ n.text }}</p>
+    </div>
+    <span class="text-xs text-ink-400 whitespace-nowrap">{{ n.time }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card p-12 text-center">
+  <div class="w-16 h-16 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center mx-auto mb-5">
+    <i data-lucide="bell-off" class="w-7 h-7 text-ink-400"></i>
+  </div>
+  <h3 class="font-display font-semibold text-lg mb-2">You're all caught up</h3>
+  <p class="text-sm text-ink-500 dark:text-ink-400">New notifications about your trips and account will appear here.</p>
+</div>
+{% endif %}
+{% endblock %}

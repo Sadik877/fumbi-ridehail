@@ -1,0 +1,65 @@
+{% extends "dashboard/_dashboard_base.html" %}
+{% block title %}Profile — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Profile{% endblock %}
+
+{% block dashboard_content %}
+<div class="grid lg:grid-cols-3 gap-6">
+
+  <!-- Profile card -->
+  <div class="card p-6 text-center h-fit">
+    <div class="w-20 h-20 rounded-full bg-canopy-500 text-ink-950 font-display font-semibold text-2xl flex items-center justify-center mx-auto mb-4">
+      {{ user.avatar_initials }}
+    </div>
+    <h3 class="font-display font-semibold text-lg">{{ user.name }}</h3>
+    <p class="text-sm text-ink-400 mb-3">{{ user.city }} · Member since {{ user.member_since }}</p>
+    <div class="flex items-center justify-center gap-1 text-sm mb-5">
+      <i data-lucide="star" class="w-4 h-4 fill-canopy-500 text-canopy-500"></i>
+      <span class="font-medium">{{ user.rating }}</span>
+      <span class="text-ink-400">rider rating</span>
+    </div>
+    <button class="btn-secondary w-full">Change photo</button>
+  </div>
+
+  <!-- Editable details -->
+  <div class="lg:col-span-2 card p-6">
+    <h3 class="font-display font-semibold mb-5">Personal details</h3>
+    <form class="space-y-4">
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label class="label">Full name</label><input type="text" class="input" value="{{ user.name }}"></div>
+        <div><label class="label">City</label><input type="text" class="input" value="{{ user.city }}"></div>
+      </div>
+      <div><label class="label">Email</label><input type="email" class="input" value="{{ user.email }}"></div>
+      <div><label class="label">Phone number</label><input type="tel" class="input" value="{{ user.phone }}"></div>
+      <button type="button" onclick="showToast('Profile updated')" class="btn-primary">Save changes</button>
+    </form>
+
+    <div class="route-thread my-7"></div>
+
+    <h3 class="font-display font-semibold mb-5">Preferences</h3>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium">Dark mode</p>
+          <p class="text-xs text-ink-400">Match your device or choose manually</p>
+        </div>
+        <button data-theme-toggle class="w-11 h-6 rounded-full bg-ink-200 dark:bg-canopy-500 relative transition-colors">
+          <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform dark:translate-x-5"></span>
+        </button>
+      </div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium">Trip notifications</p>
+          <p class="text-xs text-ink-400">Driver updates, receipts, and promos</p>
+        </div>
+        <button class="w-11 h-6 rounded-full bg-canopy-500 relative transition-colors">
+          <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow translate-x-5 transition-transform"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="route-thread my-7"></div>
+
+    <button class="text-sm font-medium text-rose-500 hover:underline">Delete account</button>
+  </div>
+</div>
+{% endblock %}
