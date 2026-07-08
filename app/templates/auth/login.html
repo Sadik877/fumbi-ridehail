@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Log in — {{ app_name }}{% endblock %}
+{% block body %}
+<div class="min-h-screen grid lg:grid-cols-2">
+
+  <!-- Brand panel -->
+  <div class="hidden lg:flex flex-col justify-between bg-ink-950 text-white p-12 relative overflow-hidden">
+    <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 relative z-10">
+      <span class="w-8 h-8 rounded-lg bg-canopy-500 flex items-center justify-center">
+        <span class="w-1.5 h-1.5 rounded-full bg-ink-950"></span>
+      </span>
+      <span class="font-display font-semibold text-lg">{{ app_name }}</span>
+    </a>
+    <div class="relative z-10 max-w-sm">
+      <p class="eyebrow mb-4">Welcome back</p>
+      <h1 class="font-display text-3xl font-semibold leading-snug mb-4">Your next ride is a tap away.</h1>
+      <p class="text-ink-400 text-sm leading-relaxed">Log in to book instantly, track past trips, and manage your Fumbi Wallet.</p>
+    </div>
+    <p class="text-xs text-ink-600 relative z-10">&copy; 2026 {{ app_name }} Technologies</p>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-canopy-700/20 blur-3xl"></div>
+  </div>
+
+  <!-- Form -->
+  <div class="flex items-center justify-center p-6 sm:p-12">
+    <div class="w-full max-w-sm">
+      <div class="lg:hidden flex items-center gap-2 mb-10">
+        <span class="w-8 h-8 rounded-lg bg-ink-900 dark:bg-canopy-500 flex items-center justify-center">
+          <span class="w-1.5 h-1.5 rounded-full bg-canopy-400 dark:bg-ink-950"></span>
+        </span>
+        <span class="font-display font-semibold text-lg">{{ app_name }}</span>
+      </div>
+
+      <h2 class="font-display text-2xl font-semibold mb-1">Log in</h2>
+      <p class="text-sm text-ink-500 dark:text-ink-400 mb-8">New here? <a href="{{ url_for('auth.register') }}" class="text-canopy-600 dark:text-canopy-400 font-medium hover:underline">Create an account</a></p>
+
+      <form method="POST" class="space-y-4">
+        <div>
+          <label class="label" for="email">Email or phone number</label>
+          <input id="email" name="email" type="text" required class="input" placeholder="you@example.com">
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="label !mb-0" for="password">Password</label>
+            <a href="#" class="text-xs font-medium text-canopy-600 dark:text-canopy-400 hover:underline">Forgot?</a>
+          </div>
+          <input id="password" name="password" type="password" required class="input" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary w-full !py-3.5 mt-2">Log in <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+      </form>
+
+      <div class="flex items-center gap-3 my-6">
+        <span class="flex-1 h-px bg-ink-100 dark:bg-ink-800"></span>
+        <span class="text-xs text-ink-400">or continue with</span>
+        <span class="flex-1 h-px bg-ink-100 dark:bg-ink-800"></span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button class="btn-secondary"><i data-lucide="chrome" class="w-4 h-4"></i> Google</button>
+        <button class="btn-secondary"><i data-lucide="apple" class="w-4 h-4"></i> Apple</button>
+      </div>
+
+      <p class="text-xs text-ink-400 mt-8 text-center">
+        Driving for a living? <a href="{{ url_for('auth.driver_register') }}" class="text-canopy-600 dark:text-canopy-400 font-medium hover:underline">Register as a driver</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
