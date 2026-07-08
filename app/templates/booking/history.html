@@ -1,0 +1,99 @@
+{% extends "dashboard/_dashboard_base.html" %}
+{% block title %}Booking history — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Booking history{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+  {% for key, label in [('all','All'), ('completed','Completed'), ('cancelled','Cancelled')] %}
+  <a href="{{ url_for('booking.history', status=key) }}"
+     class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
+     {{ 'bg-ink-900 text-white dark:bg-canopy-500 dark:text-ink-950' if active_status == key else 'bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-300 hover:border-ink-900 dark:hover:border-canopy-400' }}">
+    {{ label }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if bookings %}
+<!-- Desktop table -->
+<div class="card overflow-hidden hidden md:block">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-ink-100 dark:border-ink-800 text-left text-xs uppercase tracking-wide text-ink-400">
+        <th class="px-5 py-3 font-medium">Trip</th>
+        <th class="px-5 py-3 font-medium">Route</th>
+        <th class="px-5 py-3 font-medium">Driver</th>
+        <th class="px-5 py-3 font-medium">Date</th>
+        <th class="px-5 py-3 font-medium text-right">Fare</th>
+        <th class="px-5 py-3 font-medium text-right">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr class="border-b border-ink-50 dark:border-ink-800/60 last:border-0 hover:bg-ink-50/60 dark:hover:bg-ink-800/40 transition-colors">
+        <td class="px-5 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center shrink-0">
+              <i data-lucide="{{ 'car' if b.type == 'ride' else 'package' }}" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i>
+            </div>
+            <div>
+              <p class="font-medium">{{ b.id }}</p>
+              <p class="text-xs text-ink-400 capitalize">{{ b.type }}</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">
+          <p class="truncate max-w-[220px]">{{ b.from_ }}</p>
+          <p class="text-xs text-ink-400 truncate max-w-[220px]">to {{ b.to }}</p>
+        </td>
+        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">{{ b.driver }}</td>
+        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">
+          <p>{{ b.date }}</p><p class="text-xs text-ink-400">{{ b.time }}</p>
+        </td>
+        <td class="px-5 py-4 text-right font-mono font-medium">{{ "$%.2f"|format(b.fare) if b.fare else '—' }}</td>
+        <td class="px-5 py-4 text-right">
+          {% if b.status == 'completed' %}<span class="badge-success"><i data-lucide="check" class="w-3 h-3"></i>Completed</span>
+          {% else %}<span class="badge-danger"><i data-lucide="x" class="w-3 h-3"></i>Cancelled</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile cards -->
+<div class="space-y-3 md:hidden">
+  {% for b in bookings %}
+  <div class="card p-4">
+    <div class="flex items-start justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center shrink-0">
+          <i data-lucide="{{ 'car' if b.type == 'ride' else 'package' }}" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i>
+        </div>
+        <div>
+          <p class="font-medium text-sm">{{ b.id }}</p>
+          <p class="text-xs text-ink-400">{{ b.date }} · {{ b.time }}</p>
+        </div>
+      </div>
+      {% if b.status == 'completed' %}<span class="badge-success">Completed</span>{% else %}<span class="badge-danger">Cancelled</span>{% endif %}
+    </div>
+    <p class="text-sm text-ink-600 dark:text-ink-300 mb-1">{{ b.from_ }} <span class="text-ink-300 dark:text-ink-600">→</span> {{ b.to }}</p>
+    <div class="flex items-center justify-between mt-3 pt-3 border-t border-ink-50 dark:border-ink-800">
+      <span class="text-xs text-ink-400">{{ b.driver }}</span>
+      <span class="font-mono font-semibold text-sm">{{ "$%.2f"|format(b.fare) if b.fare else '—' }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card p-12 text-center">
+  <div class="w-16 h-16 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center mx-auto mb-5">
+    <i data-lucide="inbox" class="w-7 h-7 text-ink-400"></i>
+  </div>
+  <h3 class="font-display font-semibold text-lg mb-2">No trips here yet</h3>
+  <p class="text-sm text-ink-500 dark:text-ink-400 max-w-sm mx-auto mb-6">Trips matching this filter will show up here once you've completed one.</p>
+  <a href="{{ url_for('booking.ride') }}" class="btn-primary">Book your first ride</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Book a ride — {{ app_name }}{% endblock %}
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<section class="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
+  <div class="grid lg:grid-cols-5 gap-8">
+
+    <!-- Left: form -->
+    <div class="lg:col-span-2">
+      <p class="eyebrow mb-3">Book a ride</p>
+      <h1 class="font-display text-2xl sm:text-3xl font-semibold mb-6">Where are you headed?</h1>
+
+      <div class="card p-5">
+        <div class="relative mb-4">
+          <div class="absolute left-4 top-0 bottom-0 flex flex-col items-center justify-between py-4">
+            <span class="w-2 h-2 rounded-full bg-canopy-500"></span>
+            <span class="w-px flex-1 border-l border-dashed border-ink-300 dark:border-ink-600 my-1"></span>
+            <span class="w-2 h-2 rounded-sm bg-ink-900 dark:bg-white"></span>
+          </div>
+          <div class="pl-10 space-y-2">
+            <input id="pickup" type="text" class="input" value="Borrowdale, Harare">
+            <input id="dropoff" type="text" class="input" placeholder="Where to?">
+          </div>
+        </div>
+
+        <label class="label">When</label>
+        <div class="grid grid-cols-2 gap-2 mb-5">
+          <button class="btn-secondary !justify-start is-active" data-when="now" onclick="setWhen(this)"><i data-lucide="zap" class="w-4 h-4"></i>Now</button>
+          <button class="btn-ghost !justify-start border border-ink-200 dark:border-ink-700" data-when="later" onclick="setWhen(this)"><i data-lucide="calendar" class="w-4 h-4"></i>Schedule</button>
+        </div>
+
+        <label class="label">Choose a ride</label>
+        <div class="space-y-2" id="tierList">
+          <button type="button" class="tier-option w-full flex items-center gap-3 rounded-xl border-2 border-ink-900 dark:border-canopy-500 bg-ink-50 dark:bg-ink-800 p-3 text-left transition-colors" data-tier="standard" onclick="selectTier(this)">
+            <i data-lucide="car" class="w-6 h-6 text-ink-700 dark:text-ink-200 shrink-0"></i>
+            <span class="flex-1">
+              <span class="block text-sm font-medium">Standard</span>
+              <span class="block text-xs text-ink-400">4 seats · 3 min away</span>
+            </span>
+            <span class="font-mono text-sm font-semibold price-tag">$4.50–$6.10</span>
+          </button>
+          <button type="button" class="tier-option w-full flex items-center gap-3 rounded-xl border-2 border-transparent hover:border-ink-200 dark:hover:border-ink-700 p-3 text-left transition-colors" data-tier="comfort" onclick="selectTier(this)">
+            <i data-lucide="car-front" class="w-6 h-6 text-ink-700 dark:text-ink-200 shrink-0"></i>
+            <span class="flex-1">
+              <span class="block text-sm font-medium">Comfort</span>
+              <span class="block text-xs text-ink-400">4 seats · newer cars · 5 min away</span>
+            </span>
+            <span class="font-mono text-sm font-semibold price-tag">$7.00–$9.45</span>
+          </button>
+          <button type="button" class="tier-option w-full flex items-center gap-3 rounded-xl border-2 border-transparent hover:border-ink-200 dark:hover:border-ink-700 p-3 text-left transition-colors" data-tier="xl" onclick="selectTier(this)">
+            <i data-lucide="bus" class="w-6 h-6 text-ink-700 dark:text-ink-200 shrink-0"></i>
+            <span class="flex-1">
+              <span class="block text-sm font-medium">XL</span>
+              <span class="block text-xs text-ink-400">6 seats · 7 min away</span>
+            </span>
+            <span class="font-mono text-sm font-semibold price-tag">$9.50–$12.83</span>
+          </button>
+        </div>
+
+        <label class="label mt-5">Payment</label>
+        <button class="w-full flex items-center gap-3 rounded-xl border border-ink-200 dark:border-ink-700 p-3 mb-5 hover:border-ink-900 dark:hover:border-canopy-400 transition-colors">
+          <i data-lucide="wallet" class="w-5 h-5 text-canopy-600"></i>
+          <span class="flex-1 text-left text-sm font-medium">Fumbi Wallet — $184.50</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-ink-400"></i>
+        </button>
+
+        <button onclick="requestRide()" id="requestBtn" class="btn-primary w-full !py-3.5">
+          Request ride <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: map + status -->
+    <div class="lg:col-span-3">
+      <div class="card p-4 sm:p-5 h-full min-h-[420px] relative overflow-hidden">
+        <div class="relative rounded-xl overflow-hidden h-full min-h-[380px] bg-ink-100 dark:bg-ink-800">
+          <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full">
+            <defs>
+              <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" class="text-ink-200 dark:text-ink-700"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#grid2)" />
+            <path id="routePath2" d="M 60,320 C 140,300 120,180 220,170 S 330,90 340,60" fill="none" stroke="#0f9d63" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
+            <circle cx="60" cy="320" r="6" fill="#14171a" class="dark:fill-white"/>
+            <circle cx="340" cy="60" r="6" fill="#0f9d63"/>
+            <circle r="7" fill="#ffffff" stroke="#0f9d63" stroke-width="3">
+              <animateMotion dur="4.5s" repeatCount="indefinite" rotate="auto"><mpath href="#routePath2"/></animateMotion>
+            </circle>
+          </svg>
+
+          <!-- Idle state -->
+          <div id="idleState" class="absolute bottom-4 left-4 right-4 card !bg-white/95 dark:!bg-ink-900/95 p-4 flex items-center gap-3">
+            <i data-lucide="map-pin" class="w-5 h-5 text-canopy-600 shrink-0"></i>
+            <p class="text-sm text-ink-500">Enter a destination to see live driver availability.</p>
+          </div>
+
+          <!-- Searching state (skeleton) -->
+          <div id="searchState" class="hidden absolute inset-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center">
+            <div class="w-14 h-14 rounded-full border-4 border-ink-100 dark:border-ink-700 border-t-canopy-500 animate-spin mb-5"></div>
+            <p class="font-medium mb-1">Finding your driver…</p>
+            <p class="text-sm text-ink-400 mb-6">This usually takes less than a minute</p>
+            <div class="w-full max-w-xs space-y-2">
+              <div class="skeleton h-3 w-3/4 mx-auto"></div>
+              <div class="skeleton h-3 w-1/2 mx-auto"></div>
+            </div>
+          </div>
+
+          <!-- Matched state -->
+          <div id="matchedState" class="hidden absolute bottom-4 left-4 right-4 card !bg-white/95 dark:!bg-ink-900/95 p-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-canopy-500 text-ink-950 font-display font-semibold flex items-center justify-center shrink-0">TM</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold">Tendai M. <span class="font-normal text-ink-400">· 4.96 <i data-lucide="star" class="w-3 h-3 inline fill-canopy-500 text-canopy-500 -mt-0.5"></i></span></p>
+                <p class="text-xs text-ink-400">White Toyota Axio · AEX 4471 · 2 min away</p>
+              </div>
+              <button class="w-9 h-9 rounded-full bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center text-canopy-600 dark:text-canopy-400"><i data-lucide="phone" class="w-4 h-4"></i></button>
+              <button class="w-9 h-9 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-500"><i data-lucide="message-circle" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}
