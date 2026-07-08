@@ -1,0 +1,67 @@
+<footer class="bg-ink-950 text-sand-100">
+  <div class="route-thread opacity-40"></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-16">
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-10">
+      <div class="col-span-2">
+        <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 mb-4">
+          <span class="w-8 h-8 rounded-lg bg-canopy-500 flex items-center justify-center">
+            <span class="w-1.5 h-1.5 rounded-full bg-ink-950"></span>
+          </span>
+          <span class="font-display font-semibold text-lg">{{ app_name }}</span>
+        </a>
+        <p class="text-sm text-ink-400 leading-relaxed max-w-xs">Premium ride-hailing and delivery, built for African cities — fast, verified, and priced fairly.</p>
+        <div class="flex items-center gap-3 mt-6">
+          {% for icon in ['twitter','instagram','facebook','linkedin'] %}
+          <a href="#" class="w-9 h-9 rounded-full bg-ink-900 flex items-center justify-center text-ink-400 hover:text-canopy-400 hover:bg-ink-800 transition-colors">
+            <i data-lucide="{{ icon }}" class="w-4 h-4"></i>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-500 mb-4">Product</p>
+        <ul class="space-y-3 text-sm text-ink-300">
+          <li><a href="{{ url_for('booking.ride') }}" class="hover:text-white transition-colors">Book a ride</a></li>
+          <li><a href="{{ url_for('booking.delivery') }}" class="hover:text-white transition-colors">Send a delivery</a></li>
+          <li><a href="{{ url_for('auth.driver_register') }}" class="hover:text-white transition-colors">Drive with us</a></li>
+          <li><a href="{{ url_for('dashboard.wallet') }}" class="hover:text-white transition-colors">Wallet</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-500 mb-4">Company</p>
+        <ul class="space-y-3 text-sm text-ink-300">
+          <li><a href="{{ url_for('main.about') }}" class="hover:text-white transition-colors">About us</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Newsroom</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-500 mb-4">Support</p>
+        <ul class="space-y-3 text-sm text-ink-300">
+          <li><a href="{{ url_for('main.faq') }}" class="hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="{{ url_for('main.contact') }}" class="hover:text-white transition-colors">Contact us</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Safety</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Trust &amp; Safety</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-500 mb-4">Legal</p>
+        <ul class="space-y-3 text-sm text-ink-300">
+          <li><a href="#" class="hover:text-white transition-colors">Terms of service</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Privacy policy</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Cookie policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-14 pt-8 border-t border-ink-900">
+      <p class="text-xs text-ink-500">&copy; 2026 {{ app_name }} Technologies. All rights reserved.</p>
+      <p class="text-xs text-ink-500 font-mono">Operating in 18 cities across Africa</p>
+    </div>
+  </div>
+</footer>

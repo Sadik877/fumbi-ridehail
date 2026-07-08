@@ -1,0 +1,25 @@
+<div data-mobile-nav class="fixed inset-0 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden">
+  <div class="absolute inset-0 bg-ink-950/50 backdrop-blur-sm"></div>
+  <div data-mobile-nav-panel class="absolute right-0 top-0 h-full w-[84%] max-w-sm bg-white dark:bg-ink-900 shadow-lift translate-x-full transition-transform duration-300 ease-out flex flex-col">
+    <div class="flex items-center justify-between px-5 h-16 border-b border-ink-100 dark:border-ink-800">
+      <span class="font-display font-semibold text-lg">{{ app_name }}</span>
+      <button data-mobile-nav-close aria-label="Close menu" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink-100 dark:hover:bg-ink-800">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="flex flex-col p-5 gap-1 overflow-y-auto">
+      <a href="{{ url_for('booking.ride') }}" class="sidebar-link"><i data-lucide="car" class="w-4 h-4"></i>Ride</a>
+      <a href="{{ url_for('booking.delivery') }}" class="sidebar-link"><i data-lucide="package" class="w-4 h-4"></i>Delivery</a>
+      <a href="{{ url_for('auth.driver_register') }}" class="sidebar-link"><i data-lucide="steering-wheel" class="w-4 h-4"></i>Drive with us</a>
+      <a href="{{ url_for('main.about') }}" class="sidebar-link"><i data-lucide="info" class="w-4 h-4"></i>About</a>
+      <a href="{{ url_for('main.faq') }}" class="sidebar-link"><i data-lucide="help-circle" class="w-4 h-4"></i>FAQ</a>
+      <a href="{{ url_for('main.contact') }}" class="sidebar-link"><i data-lucide="mail" class="w-4 h-4"></i>Contact</a>
+      <div class="route-thread my-3"></div>
+      <a href="{{ url_for('auth.login') }}" class="btn-secondary w-full">Log in</a>
+      <a href="{{ url_for('auth.register') }}" class="btn-primary w-full mt-2">Get started</a>
+      <button data-theme-toggle class="sidebar-link w-full mt-3">
+        <i data-lucide="moon" class="w-4 h-4"></i> Toggle dark mode
+      </button>
+    </div>
+  </div>
+</div>
