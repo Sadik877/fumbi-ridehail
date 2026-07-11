@@ -1,4 +1,3 @@
-<!-- Mobile overlay backdrop for sidebar -->
 <div data-sidebar-close class="hidden fixed inset-0 z-40 bg-charcoal-950/50 backdrop-blur-sm lg:hidden"></div>
 
 <aside data-sidebar class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out bg-white dark:bg-charcoal-900 border-r border-charcoal-100 dark:border-charcoal-800 flex flex-col">
@@ -7,7 +6,7 @@
       <span class="w-8 h-8 rounded-lg bg-charcoal-900 dark:bg-emerald-500 flex items-center justify-center">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-charcoal-950"></span>
       </span>
-      <span class="font-display font-semibold text-lg">{{ app_name }}</span>
+      <span class="font-display font-semibold text-lg">{{ app_name }} <span class="text-xs font-normal text-charcoal-400">Driver</span></span>
     </a>
     <button data-sidebar-close aria-label="Close sidebar" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-full hover:bg-charcoal-100 dark:hover:bg-charcoal-800">
       <i data-lucide="x" class="w-4 h-4"></i>
@@ -15,37 +14,25 @@
   </div>
 
   <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-    <p class="px-3.5 text-[11px] font-semibold uppercase tracking-wide text-charcoal-400 mb-2 mt-2">Overview</p>
-    <a href="{{ url_for('dashboard.index') }}" class="{{ 'sidebar-link-active' if active == 'overview' else 'sidebar-link' }}">
+    <a href="{{ url_for('driver.dashboard') }}" class="{{ 'sidebar-link-active' if active == 'overview' else 'sidebar-link' }}">
       <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
     </a>
-    <a href="{{ url_for('booking.history') }}" class="{{ 'sidebar-link-active' if active == 'history' else 'sidebar-link' }}">
-      <i data-lucide="history" class="w-4 h-4"></i> Booking history
+    <a href="{{ url_for('driver.trips') }}" class="{{ 'sidebar-link-active' if active == 'trips' else 'sidebar-link' }}">
+      <i data-lucide="history" class="w-4 h-4"></i> Trip history
     </a>
-
-    <p class="px-3.5 text-[11px] font-semibold uppercase tracking-wide text-charcoal-400 mb-2 mt-6">Book</p>
-    <a href="{{ url_for('booking.ride') }}" class="sidebar-link">
-      <i data-lucide="car" class="w-4 h-4"></i> Book a ride
+    <a href="{{ url_for('driver.vehicles') }}" class="{{ 'sidebar-link-active' if active == 'vehicles' else 'sidebar-link' }}">
+      <i data-lucide="car" class="w-4 h-4"></i> Vehicles
     </a>
-    <a href="{{ url_for('booking.delivery') }}" class="sidebar-link">
-      <i data-lucide="package" class="w-4 h-4"></i> Send a delivery
+    <a href="{{ url_for('driver.ratings') }}" class="{{ 'sidebar-link-active' if active == 'ratings' else 'sidebar-link' }}">
+      <i data-lucide="star" class="w-4 h-4"></i> Ratings
     </a>
-
-    <p class="px-3.5 text-[11px] font-semibold uppercase tracking-wide text-charcoal-400 mb-2 mt-6">Account</p>
-    <a href="{{ url_for('dashboard.wallet') }}" class="{{ 'sidebar-link-active' if active == 'wallet' else 'sidebar-link' }}">
+    <a href="{{ url_for('dashboard.wallet') }}" class="sidebar-link">
       <i data-lucide="wallet" class="w-4 h-4"></i> Wallet
-    </a>
-    <a href="{{ url_for('dashboard.notifications') }}" class="{{ 'sidebar-link-active' if active == 'notifications' else 'sidebar-link' }}">
-      <i data-lucide="bell" class="w-4 h-4"></i> Notifications
-      <span class="ml-auto badge-success">3</span>
-    </a>
-    <a href="{{ url_for('dashboard.profile') }}" class="{{ 'sidebar-link-active' if active == 'profile' else 'sidebar-link' }}">
-      <i data-lucide="user" class="w-4 h-4"></i> Profile
     </a>
   </nav>
 
   <div class="p-4 border-t border-charcoal-100 dark:border-charcoal-800 shrink-0">
-    <div class="flex items-center gap-3 rounded-xl p-2 hover:bg-charcoal-100 dark:hover:bg-charcoal-800 transition-colors cursor-pointer">
+    <div class="flex items-center gap-3 rounded-xl p-2 hover:bg-charcoal-100 dark:hover:bg-charcoal-800 transition-colors">
       <div class="w-9 h-9 rounded-full bg-emerald-500 text-charcoal-950 font-display font-semibold text-sm flex items-center justify-center shrink-0">
         {{ current_user.full_name[:2]|upper }}
       </div>

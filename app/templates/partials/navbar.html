@@ -1,11 +1,11 @@
-<nav class="sticky top-0 z-50 bg-sand-100/80 dark:bg-ink-950/80 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800">
+<nav class="sticky top-0 z-50 bg-paper-100/80 dark:bg-charcoal-950/80 backdrop-blur-lg border-b border-charcoal-100 dark:border-charcoal-800">
   <div class="max-w-7xl mx-auto px-5 sm:px-8">
     <div class="flex items-center justify-between h-16">
 
       <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 group">
-        <span class="relative w-8 h-8 rounded-lg bg-ink-900 dark:bg-canopy-500 flex items-center justify-center overflow-hidden">
-          <span class="absolute w-1.5 h-1.5 rounded-full bg-canopy-400 dark:bg-ink-950 ping-soft"></span>
-          <span class="w-1.5 h-1.5 rounded-full bg-canopy-400 dark:bg-ink-950"></span>
+        <span class="relative w-8 h-8 rounded-lg bg-charcoal-900 dark:bg-emerald-500 flex items-center justify-center overflow-hidden">
+          <span class="absolute w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-charcoal-950 ping-soft"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-charcoal-950"></span>
         </span>
         <span class="font-display font-semibold text-lg tracking-tight">{{ app_name }}</span>
       </a>
@@ -14,12 +14,13 @@
         <a href="{{ url_for('booking.ride') }}" class="nav-link">Ride</a>
         <a href="{{ url_for('booking.delivery') }}" class="nav-link">Delivery</a>
         <a href="{{ url_for('auth.driver_register') }}" class="nav-link">Drive with us</a>
+        <a href="{{ url_for('auth.business_register') }}" class="nav-link">For Business</a>
         <a href="{{ url_for('main.about') }}" class="nav-link">About</a>
         <a href="{{ url_for('main.faq') }}" class="nav-link">FAQ</a>
       </div>
 
       <div class="hidden lg:flex items-center gap-3">
-        <button data-theme-toggle aria-pressed="false" aria-label="Toggle dark mode" class="w-9 h-9 rounded-full flex items-center justify-center text-ink-500 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800 transition-colors">
+        <button data-theme-toggle aria-pressed="false" aria-label="Toggle dark mode" class="w-9 h-9 rounded-full flex items-center justify-center text-charcoal-500 hover:bg-charcoal-100 dark:text-charcoal-300 dark:hover:bg-charcoal-800 transition-colors">
           <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
           <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
         </button>
@@ -27,7 +28,7 @@
         <a href="{{ url_for('auth.register') }}" class="btn-primary">Get started</a>
       </div>
 
-      <button data-mobile-nav-open aria-label="Open menu" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-ink-100 dark:hover:bg-ink-800">
+      <button data-mobile-nav-open aria-label="Open menu" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-charcoal-100 dark:hover:bg-charcoal-800">
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
     </div>
