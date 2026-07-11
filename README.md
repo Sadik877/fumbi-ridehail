@@ -94,6 +94,37 @@ Visit `http://localhost:5000`.
 4. The `preDeployCommand` runs `flask db upgrade` automatically on every
    deploy once migrations exist locally and are committed.
 
+### No Shell access (free tier)
+
+Render's **Shell tab requires a paid instance type** — free-tier services
+don't get one. If you're on the free tier and can't run commands
+interactively, use the **Build Command** field instead (Settings → Build
+Command), which runs on every plan:
+
+```
+pip install -r requirements.txt && flask --app wsgi init-db && flask --app wsgi seed-db
+```
+
+`flask init-db` calls `db.create_all()` directly — it creates every table
+from the current models without needing a `migrations/` folder, which is
+the practical option when you don't have a local dev environment to
+generate real Alembic migrations yet. It's safe to leave in the Build
+Command permanently: it only creates tables that don't exist yet, never
+drops or alters ones that do. `seed-db` is similarly safe to re-run — it
+checks for existing records before inserting.
+
+**The trade-off:** `db.create_all()` won't apply schema *changes* later
+(new columns, renamed tables, etc.) — only real Flask-Migrate migrations
+do that. Once you have Python + git set up locally, switch to:
+```bash
+flask --app wsgi db init
+flask --app wsgi db migrate -m "Initial schema"
+flask --app wsgi db upgrade
+```
+commit the generated `migrations/` folder, and let `preDeployCommand` in
+`render.yaml` (or the Shell, once you're on a paid instance) take it from
+there for every future change.
+
 ## Project structure
 
 ```
