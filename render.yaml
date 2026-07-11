@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: movex-web
+    runtime: python
+    plan: starter
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -c gunicorn_conf.py wsgi:app"
+    preDeployCommand: "flask --app wsgi db upgrade"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: movex-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      # Set these manually in the Render dashboard once you have them —
+      # left unset, the app runs fine but payments/email/maps fall back
+      # to their "not configured" / logging behavior (see app/config.py):
+      - key: MAIL_SUPPRESS_SEND
+        value: "true"
+      - key: FLUTTERWAVE_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: movex-db
+    plan: starter
+    databaseName: movex
+    user: movex
