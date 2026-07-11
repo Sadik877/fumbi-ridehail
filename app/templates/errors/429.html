@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Something went wrong — {{ app_name }}{% endblock %}
+{% block title %}Too many requests — {{ app_name }}{% endblock %}
 {% block body %}
 {% include "partials/navbar.html" %}
 {% include "partials/mobile_nav.html" %}
 
 <section class="max-w-lg mx-auto px-5 py-24 sm:py-32 text-center">
-  <p class="font-mono text-rose-500 text-sm mb-4">Error 500</p>
-  <h1 class="font-display text-3xl sm:text-4xl font-semibold mb-4">Something broke on our end.</h1>
-  <p class="text-charcoal-500 dark:text-charcoal-400 mb-8">Our team's already been notified. Try refreshing, or head back home while we sort it out.</p>
+  <p class="font-mono text-amber-500 text-sm mb-4">Error 429</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold mb-4">Slow down a little.</h1>
+  <p class="text-charcoal-500 dark:text-charcoal-400 mb-8">You've made too many requests in a short time. Please wait a moment and try again.</p>
   <div class="route-thread mb-8"></div>
   <a href="{{ url_for('main.landing') }}" class="btn-primary">Back to home <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
 </section>
