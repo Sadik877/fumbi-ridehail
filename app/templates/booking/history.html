@@ -4,10 +4,10 @@
 
 {% block dashboard_content %}
 <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
-  {% for key, label in [('all','All'), ('completed','Completed'), ('cancelled','Cancelled')] %}
+  {% for key, label in [('all','All'), ('pending','Pending'), ('accepted','Accepted'), ('completed','Completed'), ('cancelled','Cancelled')] %}
   <a href="{{ url_for('booking.history', status=key) }}"
      class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
-     {{ 'bg-ink-900 text-white dark:bg-canopy-500 dark:text-ink-950' if active_status == key else 'bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-300 hover:border-ink-900 dark:hover:border-canopy-400' }}">
+     {{ 'bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950' if active_status == key else 'bg-white dark:bg-charcoal-900 border border-charcoal-200 dark:border-charcoal-700 text-charcoal-600 dark:text-charcoal-300 hover:border-charcoal-900 dark:hover:border-emerald-400' }}">
     {{ label }}
   </a>
   {% endfor %}
@@ -18,41 +18,62 @@
 <div class="card overflow-hidden hidden md:block">
   <table class="w-full text-sm">
     <thead>
-      <tr class="border-b border-ink-100 dark:border-ink-800 text-left text-xs uppercase tracking-wide text-ink-400">
+      <tr class="border-b border-charcoal-100 dark:border-charcoal-800 text-left text-xs uppercase tracking-wide text-charcoal-400">
         <th class="px-5 py-3 font-medium">Trip</th>
         <th class="px-5 py-3 font-medium">Route</th>
         <th class="px-5 py-3 font-medium">Driver</th>
         <th class="px-5 py-3 font-medium">Date</th>
         <th class="px-5 py-3 font-medium text-right">Fare</th>
         <th class="px-5 py-3 font-medium text-right">Status</th>
+        <th class="px-5 py-3 font-medium text-right"></th>
       </tr>
     </thead>
     <tbody>
       {% for b in bookings %}
-      <tr class="border-b border-ink-50 dark:border-ink-800/60 last:border-0 hover:bg-ink-50/60 dark:hover:bg-ink-800/40 transition-colors">
+      {% set obj = b.obj %}
+      <tr class="border-b border-charcoal-50 dark:border-charcoal-800/60 last:border-0 hover:bg-charcoal-50/60 dark:hover:bg-charcoal-800/40 transition-colors">
         <td class="px-5 py-4">
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center shrink-0">
-              <i data-lucide="{{ 'car' if b.type == 'ride' else 'package' }}" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i>
+            <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+              <i data-lucide="{{ 'car' if b.kind == 'ride' else 'package' }}" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
             </div>
             <div>
-              <p class="font-medium">{{ b.id }}</p>
-              <p class="text-xs text-ink-400 capitalize">{{ b.type }}</p>
+              <p class="font-medium">{{ obj.reference }}</p>
+              <p class="text-xs text-charcoal-400 capitalize">{{ b.kind }}</p>
             </div>
           </div>
         </td>
-        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">
-          <p class="truncate max-w-[220px]">{{ b.from_ }}</p>
-          <p class="text-xs text-ink-400 truncate max-w-[220px]">to {{ b.to }}</p>
+        <td class="px-5 py-4 text-charcoal-600 dark:text-charcoal-300">
+          <p class="truncate max-w-[220px]">{{ obj.pickup_address }}</p>
+          <p class="text-xs text-charcoal-400 truncate max-w-[220px]">to {{ obj.dropoff_address }}</p>
         </td>
-        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">{{ b.driver }}</td>
-        <td class="px-5 py-4 text-ink-600 dark:text-ink-300">
-          <p>{{ b.date }}</p><p class="text-xs text-ink-400">{{ b.time }}</p>
+        <td class="px-5 py-4 text-charcoal-600 dark:text-charcoal-300">{{ obj.driver.user.full_name if obj.driver else '—' }}</td>
+        <td class="px-5 py-4 text-charcoal-600 dark:text-charcoal-300">
+          <p>{{ obj.created_at.strftime('%b %-d, %Y') }}</p><p class="text-xs text-charcoal-400">{{ obj.created_at.strftime('%I:%M %p') }}</p>
         </td>
-        <td class="px-5 py-4 text-right font-mono font-medium">{{ "$%.2f"|format(b.fare) if b.fare else '—' }}</td>
+        <td class="px-5 py-4 text-right font-mono font-medium">
+          {% set fare = obj.final_fare or obj.fare_estimate_low %}
+          {{ "₦%.2f"|format(fare) if fare else '—' }}
+        </td>
         <td class="px-5 py-4 text-right">
-          {% if b.status == 'completed' %}<span class="badge-success"><i data-lucide="check" class="w-3 h-3"></i>Completed</span>
-          {% else %}<span class="badge-danger"><i data-lucide="x" class="w-3 h-3"></i>Cancelled</span>{% endif %}
+          {% if obj.status.value == 'completed' %}<span class="badge-success"><i data-lucide="check" class="w-3 h-3"></i>Completed</span>
+          {% elif obj.status.value == 'cancelled' %}<span class="badge-danger"><i data-lucide="x" class="w-3 h-3"></i>Cancelled</span>
+          {% elif obj.status.value == 'pending' %}<span class="badge-neutral"><i data-lucide="clock" class="w-3 h-3"></i>Pending</span>
+          {% else %}<span class="badge-warning"><i data-lucide="loader" class="w-3 h-3"></i>{{ obj.status.value|capitalize }}</span>{% endif %}
+        </td>
+        <td class="px-5 py-4 text-right">
+          {% if obj.status.value in ('pending', 'accepted') %}
+          <form method="POST" action="{{ url_for('booking.cancel', kind=b.kind, booking_id=obj.id) }}" onsubmit="return confirm('Cancel this booking?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="text-xs font-medium text-rose-500 hover:underline">Cancel</button>
+          </form>
+          {% elif obj.status.value == 'completed' and obj.driver %}
+          <form method="POST" action="{{ url_for('booking.rate', kind=b.kind, booking_id=obj.id) }}" class="flex items-center justify-end gap-1">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="stars" value="5">
+            <button type="submit" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:underline">Rate 5★</button>
+          </form>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
@@ -63,23 +84,27 @@
 <!-- Mobile cards -->
 <div class="space-y-3 md:hidden">
   {% for b in bookings %}
+  {% set obj = b.obj %}
   <div class="card p-4">
     <div class="flex items-start justify-between mb-3">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center shrink-0">
-          <i data-lucide="{{ 'car' if b.type == 'ride' else 'package' }}" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i>
+        <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+          <i data-lucide="{{ 'car' if b.kind == 'ride' else 'package' }}" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
         </div>
         <div>
-          <p class="font-medium text-sm">{{ b.id }}</p>
-          <p class="text-xs text-ink-400">{{ b.date }} · {{ b.time }}</p>
+          <p class="font-medium text-sm">{{ obj.reference }}</p>
+          <p class="text-xs text-charcoal-400">{{ obj.created_at.strftime('%b %-d, %Y · %I:%M %p') }}</p>
         </div>
       </div>
-      {% if b.status == 'completed' %}<span class="badge-success">Completed</span>{% else %}<span class="badge-danger">Cancelled</span>{% endif %}
+      {% if obj.status.value == 'completed' %}<span class="badge-success">Completed</span>
+      {% elif obj.status.value == 'cancelled' %}<span class="badge-danger">Cancelled</span>
+      {% else %}<span class="badge-neutral">{{ obj.status.value|capitalize }}</span>{% endif %}
     </div>
-    <p class="text-sm text-ink-600 dark:text-ink-300 mb-1">{{ b.from_ }} <span class="text-ink-300 dark:text-ink-600">→</span> {{ b.to }}</p>
-    <div class="flex items-center justify-between mt-3 pt-3 border-t border-ink-50 dark:border-ink-800">
-      <span class="text-xs text-ink-400">{{ b.driver }}</span>
-      <span class="font-mono font-semibold text-sm">{{ "$%.2f"|format(b.fare) if b.fare else '—' }}</span>
+    <p class="text-sm text-charcoal-600 dark:text-charcoal-300 mb-1">{{ obj.pickup_address }} <span class="text-charcoal-300 dark:text-charcoal-600">→</span> {{ obj.dropoff_address }}</p>
+    <div class="flex items-center justify-between mt-3 pt-3 border-t border-charcoal-50 dark:border-charcoal-800">
+      <span class="text-xs text-charcoal-400">{{ obj.driver.user.full_name if obj.driver else 'Unassigned' }}</span>
+      {% set fare = obj.final_fare or obj.fare_estimate_low %}
+      <span class="font-mono font-semibold text-sm">{{ "₦%.2f"|format(fare) if fare else '—' }}</span>
     </div>
   </div>
   {% endfor %}
@@ -88,11 +113,11 @@
 {% else %}
 <!-- Empty state -->
 <div class="card p-12 text-center">
-  <div class="w-16 h-16 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center mx-auto mb-5">
-    <i data-lucide="inbox" class="w-7 h-7 text-ink-400"></i>
+  <div class="w-16 h-16 rounded-full bg-charcoal-100 dark:bg-charcoal-800 flex items-center justify-center mx-auto mb-5">
+    <i data-lucide="inbox" class="w-7 h-7 text-charcoal-400"></i>
   </div>
   <h3 class="font-display font-semibold text-lg mb-2">No trips here yet</h3>
-  <p class="text-sm text-ink-500 dark:text-ink-400 max-w-sm mx-auto mb-6">Trips matching this filter will show up here once you've completed one.</p>
+  <p class="text-sm text-charcoal-500 dark:text-charcoal-400 max-w-sm mx-auto mb-6">Trips matching this filter will show up here once you've completed one.</p>
   <a href="{{ url_for('booking.ride') }}" class="btn-primary">Book your first ride</a>
 </div>
 {% endif %}

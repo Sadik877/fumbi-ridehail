@@ -11,88 +11,90 @@
       <p class="eyebrow mb-3">Send a delivery</p>
       <h1 class="font-display text-2xl sm:text-3xl font-semibold mb-6">What are we sending today?</h1>
 
-      <div class="card p-5">
+      <form method="POST" id="deliveryForm" class="card p-5">
+        {{ form.csrf_token }}
         <div class="relative mb-5">
           <div class="absolute left-4 top-0 bottom-0 flex flex-col items-center justify-between py-4">
-            <span class="w-2 h-2 rounded-full bg-canopy-500"></span>
-            <span class="w-px flex-1 border-l border-dashed border-ink-300 dark:border-ink-600 my-1"></span>
-            <span class="w-2 h-2 rounded-sm bg-ink-900 dark:bg-white"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="w-px flex-1 border-l border-dashed border-charcoal-300 dark:border-charcoal-600 my-1"></span>
+            <span class="w-2 h-2 rounded-sm bg-charcoal-900 dark:bg-white"></span>
           </div>
           <div class="pl-10 space-y-2">
-            <input type="text" class="input" value="Newlands, Harare" placeholder="Pickup address">
-            <input id="delivery-dropoff" type="text" class="input" placeholder="Drop-off address">
+            <input name="pickup_address" type="text" required class="input" placeholder="Pickup address" value="{{ form.pickup_address.data or '' }}">
+            <input id="delivery-dropoff" name="dropoff_address" type="text" required class="input" placeholder="Drop-off address" value="{{ form.dropoff_address.data or '' }}">
           </div>
         </div>
 
         <label class="label">Parcel size</label>
+        <input type="hidden" name="parcel_size" id="parcelSizeInput" value="envelope">
         <div class="grid grid-cols-3 gap-2 mb-5">
-          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-ink-900 dark:border-canopy-500 bg-ink-50 dark:bg-ink-800 p-3 transition-colors" onclick="selectParcelSize(this)">
+          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-charcoal-900 dark:border-emerald-500 bg-charcoal-50 dark:bg-charcoal-800 p-3 transition-colors" data-size="envelope" onclick="selectParcelSize(this)">
             <i data-lucide="mail" class="w-5 h-5"></i><span class="text-xs font-medium">Envelope</span>
           </button>
-          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-transparent hover:border-ink-200 dark:hover:border-ink-700 p-3 transition-colors" onclick="selectParcelSize(this)">
+          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-transparent hover:border-charcoal-200 dark:hover:border-charcoal-700 p-3 transition-colors" data-size="parcel" onclick="selectParcelSize(this)">
             <i data-lucide="package" class="w-5 h-5"></i><span class="text-xs font-medium">Parcel</span>
           </button>
-          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-transparent hover:border-ink-200 dark:hover:border-ink-700 p-3 transition-colors" onclick="selectParcelSize(this)">
+          <button type="button" class="parcel-option flex flex-col items-center gap-1.5 rounded-xl border-2 border-transparent hover:border-charcoal-200 dark:hover:border-charcoal-700 p-3 transition-colors" data-size="large_box" onclick="selectParcelSize(this)">
             <i data-lucide="box" class="w-5 h-5"></i><span class="text-xs font-medium">Large box</span>
           </button>
         </div>
 
         <label class="label">Recipient details</label>
         <div class="space-y-2 mb-5">
-          <input type="text" class="input" placeholder="Recipient name">
-          <input type="tel" class="input" placeholder="Recipient phone number">
+          <input name="recipient_name" type="text" required class="input" placeholder="Recipient name">
+          <input name="recipient_phone" type="tel" required class="input" placeholder="Recipient phone number">
         </div>
 
         <label class="label">Delivery notes (optional)</label>
-        <textarea class="input mb-5 resize-none" rows="2" placeholder="e.g. Leave with security at the gate"></textarea>
+        <textarea name="delivery_notes" class="input mb-5 resize-none" rows="2" placeholder="e.g. Leave with security at the gate"></textarea>
 
-        <div class="card !bg-sand-100 dark:!bg-ink-800 !shadow-none p-4 flex items-center justify-between mb-5">
-          <span class="text-sm text-ink-500 dark:text-ink-400">Estimated fare</span>
-          <span class="font-mono text-lg font-semibold">$4.20–$5.80</span>
+        <div class="card !bg-paper-100 dark:!bg-charcoal-800 !shadow-none p-4 flex items-center justify-between mb-5">
+          <span class="text-sm text-charcoal-500 dark:text-charcoal-400">Estimated fare</span>
+          <span class="font-mono text-lg font-semibold">₦300–₦700</span>
         </div>
 
-        <button onclick="requestDelivery()" id="requestDeliveryBtn" class="btn-primary w-full !py-3.5">
+        <button type="submit" id="requestDeliveryBtn" class="btn-primary w-full !py-3.5">
           Request courier <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
-      </div>
+      </form>
     </div>
 
     <div class="lg:col-span-3">
       <div class="card p-4 sm:p-5 h-full min-h-[420px]">
-        <div class="relative rounded-xl overflow-hidden h-full min-h-[380px] bg-ink-100 dark:bg-ink-800">
+        <div class="relative rounded-xl overflow-hidden h-full min-h-[380px] bg-charcoal-100 dark:bg-charcoal-800">
           <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full">
             <defs>
               <pattern id="grid3" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" class="text-ink-200 dark:text-ink-700"/>
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" class="text-charcoal-200 dark:text-charcoal-700"/>
               </pattern>
             </defs>
             <rect width="400" height="400" fill="url(#grid3)" />
-            <path id="routePath3" d="M 50,60 C 130,90 110,220 210,240 S 330,320 350,350" fill="none" stroke="#0f9d63" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
-            <circle cx="50" cy="60" r="6" fill="#14171a" class="dark:fill-white"/>
-            <circle cx="350" cy="350" r="6" fill="#0f9d63"/>
-            <circle r="7" fill="#ffffff" stroke="#0f9d63" stroke-width="3">
+            <path id="routePath3" d="M 50,60 C 130,90 110,220 210,240 S 330,320 350,350" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
+            <circle cx="50" cy="60" r="6" fill="#151519" class="dark:fill-white"/>
+            <circle cx="350" cy="350" r="6" fill="#059669"/>
+            <circle r="7" fill="#ffffff" stroke="#059669" stroke-width="3">
               <animateMotion dur="4.5s" repeatCount="indefinite" rotate="auto"><mpath href="#routePath3"/></animateMotion>
             </circle>
           </svg>
-          <div class="absolute bottom-4 left-4 right-4 card !bg-white/95 dark:!bg-ink-900/95 p-4 flex items-center gap-3">
-            <i data-lucide="truck" class="w-5 h-5 text-canopy-600 shrink-0"></i>
-            <p class="text-sm text-ink-500">Couriers nearby will be matched once you confirm details.</p>
+          <div class="absolute bottom-4 left-4 right-4 card !bg-white/95 dark:!bg-charcoal-900/95 p-4 flex items-center gap-3">
+            <i data-lucide="truck" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+            <p class="text-sm text-charcoal-500">Couriers nearby will be matched once you confirm details.</p>
           </div>
         </div>
       </div>
 
       <div class="grid sm:grid-cols-3 gap-4 mt-6">
         <div class="card p-4 flex items-center gap-3">
-          <i data-lucide="clock" class="w-5 h-5 text-canopy-600"></i>
-          <div><p class="text-sm font-medium">Same-day delivery</p><p class="text-xs text-ink-400">Most parcels arrive within 90 minutes</p></div>
+          <i data-lucide="clock" class="w-5 h-5 text-emerald-600"></i>
+          <div><p class="text-sm font-medium">Same-day delivery</p><p class="text-xs text-charcoal-400">Most parcels arrive within 90 minutes</p></div>
         </div>
         <div class="card p-4 flex items-center gap-3">
-          <i data-lucide="shield-check" class="w-5 h-5 text-canopy-600"></i>
-          <div><p class="text-sm font-medium">Insured up to $200</p><p class="text-xs text-ink-400">Included on every delivery</p></div>
+          <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
+          <div><p class="text-sm font-medium">Insured up to $200</p><p class="text-xs text-charcoal-400">Included on every delivery</p></div>
         </div>
         <div class="card p-4 flex items-center gap-3">
-          <i data-lucide="map-pin" class="w-5 h-5 text-canopy-600"></i>
-          <div><p class="text-sm font-medium">Live tracking</p><p class="text-xs text-ink-400">Shareable link for the recipient</p></div>
+          <i data-lucide="map-pin" class="w-5 h-5 text-emerald-600"></i>
+          <div><p class="text-sm font-medium">Live tracking</p><p class="text-xs text-charcoal-400">Shareable link for the recipient</p></div>
         </div>
       </div>
     </div>
