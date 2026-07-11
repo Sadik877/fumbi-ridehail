@@ -1,5 +1,5 @@
 /**
- * Fumbi — global app behavior shared across every page.
+ * MoveX — global app behavior shared across every page.
  * Page-specific logic lives in landing.js / booking.js / dashboard.js.
  */
 
@@ -7,7 +7,7 @@
 // Dark mode
 // ---------------------------------------------------------------------
 const ThemeManager = {
-  key: "fumbi-theme",
+  key: "movex-theme",
   init() {
     const saved = localStorage.getItem(this.key);
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -33,6 +33,15 @@ ThemeManager.init();
 document.addEventListener("click", (e) => {
   if (e.target.closest("[data-theme-toggle]")) ThemeManager.toggle();
 });
+
+// ---------------------------------------------------------------------
+// PWA service worker registration
+// ---------------------------------------------------------------------
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/static/service-worker.js").catch(() => {});
+  });
+}
 
 // ---------------------------------------------------------------------
 // Mobile navigation drawer
@@ -105,7 +114,7 @@ window.showToast = function showToast(message, variant = "success") {
     document.body.appendChild(host);
   }
   const colors = {
-    success: "bg-ink-900 text-white dark:bg-canopy-500 dark:text-ink-950",
+    success: "bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950",
     error: "bg-rose-600 text-white",
   };
   const toast = document.createElement("div");
