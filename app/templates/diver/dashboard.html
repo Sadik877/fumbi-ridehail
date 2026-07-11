@@ -1,0 +1,110 @@
+{% extends "driver/_base.html" %}
+{% block title %}Driver dashboard — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<div class="card p-5 mb-8 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <span class="relative flex h-3 w-3">
+      {% if profile.is_online %}<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>{% endif %}
+      <span class="relative inline-flex rounded-full h-3 w-3 {{ 'bg-emerald-500' if profile.is_online else 'bg-charcoal-300 dark:bg-charcoal-600' }}"></span>
+    </span>
+    <div>
+      <p class="font-medium text-sm">{{ "You're online" if profile.is_online else "You're offline" }}</p>
+      <p class="text-xs text-charcoal-400">{{ "Ride and delivery requests will appear below" if profile.is_online else "Go online to start receiving requests" }}</p>
+    </div>
+  </div>
+  <form method="POST" action="{{ url_for('driver.toggle_online') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="{{ 'btn-secondary' if profile.is_online else 'btn-primary' }}">
+      {{ "Go offline" if profile.is_online else "Go online" }}
+    </button>
+  </form>
+</div>
+
+<div class="grid sm:grid-cols-3 gap-4 mb-8">
+  <div class="card p-5">
+    <p class="text-xs text-charcoal-400 mb-2">Today's earnings</p>
+    <p class="font-mono text-2xl font-semibold text-emerald-600 dark:text-emerald-400">₦{{ "%.2f"|format(today_earnings) }}</p>
+  </div>
+  <div class="card p-5">
+    <p class="text-xs text-charcoal-400 mb-2">Trips today</p>
+    <p class="font-mono text-2xl font-semibold">{{ trips_today }}</p>
+  </div>
+  <div class="card p-5">
+    <p class="text-xs text-charcoal-400 mb-2">Rating</p>
+    <p class="font-mono text-2xl font-semibold">{{ "%.1f"|format(profile.rating_avg) }} <span class="text-sm text-charcoal-400">/ 5</span></p>
+  </div>
+</div>
+
+{% if active_ride or active_delivery %}
+<div class="card p-5 mb-8 border-2 border-emerald-500">
+  <p class="eyebrow mb-2">Active trip</p>
+  {% if active_ride %}
+  <p class="text-sm font-medium mb-1">{{ active_ride.pickup_address }} → {{ active_ride.dropoff_address }}</p>
+  <p class="text-xs text-charcoal-400 mb-4">Reference {{ active_ride.reference }}</p>
+  <form method="POST" action="{{ url_for('driver.complete_ride', booking_id=active_ride.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn-primary">Mark trip completed</button>
+  </form>
+  {% else %}
+  <p class="text-sm font-medium mb-1">{{ active_delivery.pickup_address }} → {{ active_delivery.dropoff_address }}</p>
+  <p class="text-xs text-charcoal-400 mb-4">Reference {{ active_delivery.reference }} · to {{ active_delivery.recipient_name }}</p>
+  <form method="POST" action="{{ url_for('driver.complete_delivery', booking_id=active_delivery.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn-primary">Mark delivery completed</button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <div class="card overflow-hidden">
+    <div class="px-6 py-5 border-b border-charcoal-100 dark:border-charcoal-800">
+      <h3 class="font-display font-semibold">Nearby ride requests</h3>
+    </div>
+    {% if pending_rides %}
+    <div class="divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+      {% for r in pending_rides %}
+      <div class="p-5">
+        <p class="text-sm font-medium mb-1">{{ r.pickup_address }} → {{ r.dropoff_address }}</p>
+        <p class="text-xs text-charcoal-400 mb-3">Est. ₦{{ "%.2f"|format(r.fare_estimate_low) if r.fare_estimate_low else "—" }}</p>
+        <form method="POST" action="{{ url_for('driver.accept_ride', booking_id=r.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-primary !py-2 !px-4 text-xs">Accept ride</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-10 text-center text-sm text-charcoal-400">
+      {{ "No ride requests nearby right now." if profile.is_online else "Go online to see ride requests." }}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="px-6 py-5 border-b border-charcoal-100 dark:border-charcoal-800">
+      <h3 class="font-display font-semibold">Nearby delivery requests</h3>
+    </div>
+    {% if pending_deliveries %}
+    <div class="divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+      {% for d in pending_deliveries %}
+      <div class="p-5">
+        <p class="text-sm font-medium mb-1">{{ d.pickup_address }} → {{ d.dropoff_address }}</p>
+        <p class="text-xs text-charcoal-400 mb-3">Est. ₦{{ "%.2f"|format(d.fare_estimate_low) if d.fare_estimate_low else "—" }} · {{ d.parcel_size.value|replace('_',' ')|capitalize }}</p>
+        <form method="POST" action="{{ url_for('driver.accept_delivery', booking_id=d.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-primary !py-2 !px-4 text-xs">Accept delivery</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="p-10 text-center text-sm text-charcoal-400">
+      {{ "No delivery requests nearby right now." if profile.is_online else "Go online to see delivery requests." }}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

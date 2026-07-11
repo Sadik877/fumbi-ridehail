@@ -1,0 +1,34 @@
+{% extends "driver/_base.html" %}
+{% block title %}Trip history — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Trip history{% endblock %}
+
+{% block dashboard_content %}
+{% if bookings %}
+<div class="card overflow-hidden">
+  <div class="divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+    {% for b in bookings %}
+    {% set obj = b.obj %}
+    <div class="flex items-center gap-4 px-6 py-4">
+      <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+        <i data-lucide="{{ 'car' if b.kind == 'ride' else 'package' }}" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ obj.pickup_address }} → {{ obj.dropoff_address }}</p>
+        <p class="text-xs text-charcoal-400">{{ obj.updated_at.strftime('%b %-d, %Y · %I:%M %p') }}</p>
+      </div>
+      <span class="font-mono text-sm font-medium">₦{{ "%.2f"|format(obj.final_fare) if obj.final_fare else '—' }}</span>
+      <span class="badge-success">Completed</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="card p-12 text-center">
+  <div class="w-16 h-16 rounded-full bg-charcoal-100 dark:bg-charcoal-800 flex items-center justify-center mx-auto mb-5">
+    <i data-lucide="inbox" class="w-7 h-7 text-charcoal-400"></i>
+  </div>
+  <h3 class="font-display font-semibold text-lg mb-2">No completed trips yet</h3>
+  <p class="text-sm text-charcoal-500 dark:text-charcoal-400">Trips you complete will show up here.</p>
+</div>
+{% endif %}
+{% endblock %}

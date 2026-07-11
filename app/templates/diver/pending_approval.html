@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Application under review — {{ app_name }}{% endblock %}
+{% block body %}
+<div class="min-h-screen flex items-center justify-center p-6">
+  <div class="card p-10 text-center max-w-md">
+    <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-6">
+      <i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
+    </div>
+    {% if status == 'rejected' %}
+    <h1 class="font-display text-2xl font-semibold mb-2">Application not approved</h1>
+    <p class="text-sm text-charcoal-500 dark:text-charcoal-400 leading-relaxed mb-8">Your driver application wasn't approved this time. Contact support if you'd like to know more or reapply.</p>
+    {% else %}
+    <h1 class="font-display text-2xl font-semibold mb-2">Your application is under review</h1>
+    <p class="text-sm text-charcoal-500 dark:text-charcoal-400 leading-relaxed mb-8">Our team is verifying your documents and vehicle details. This usually takes 2–3 business days — we'll email you as soon as you're approved.</p>
+    {% endif %}
+    <a href="{{ url_for('main.contact') }}" class="btn-primary">Contact support</a>
+  </div>
+</div>
+{% endblock %}
