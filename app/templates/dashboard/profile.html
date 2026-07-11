@@ -7,59 +7,95 @@
 
   <!-- Profile card -->
   <div class="card p-6 text-center h-fit">
-    <div class="w-20 h-20 rounded-full bg-canopy-500 text-ink-950 font-display font-semibold text-2xl flex items-center justify-center mx-auto mb-4">
-      {{ user.avatar_initials }}
+    <div class="w-20 h-20 rounded-full bg-emerald-500 text-charcoal-950 font-display font-semibold text-2xl flex items-center justify-center mx-auto mb-4">
+      {{ current_user.full_name[:2]|upper }}
     </div>
-    <h3 class="font-display font-semibold text-lg">{{ user.name }}</h3>
-    <p class="text-sm text-ink-400 mb-3">{{ user.city }} · Member since {{ user.member_since }}</p>
-    <div class="flex items-center justify-center gap-1 text-sm mb-5">
-      <i data-lucide="star" class="w-4 h-4 fill-canopy-500 text-canopy-500"></i>
-      <span class="font-medium">{{ user.rating }}</span>
-      <span class="text-ink-400">rider rating</span>
+    <h3 class="font-display font-semibold text-lg">{{ current_user.full_name }}</h3>
+    <p class="text-sm text-charcoal-400 mb-3">{{ current_user.city or "City not set" }} · Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+    {% if current_user.passenger_profile %}
+    <div class="flex items-center justify-center gap-1 text-sm mb-2">
+      <i data-lucide="star" class="w-4 h-4 fill-emerald-500 text-emerald-500"></i>
+      <span class="font-medium">{{ "%.1f"|format(current_user.passenger_profile.rating_avg) }}</span>
+      <span class="text-charcoal-400">rider rating</span>
     </div>
-    <button class="btn-secondary w-full">Change photo</button>
+    {% endif %}
+    <div class="flex items-center justify-center gap-2 mt-3">
+      {% if current_user.is_email_verified %}<span class="badge-success">Email verified</span>{% else %}<span class="badge-warning">Email unverified</span>{% endif %}
+    </div>
   </div>
 
   <!-- Editable details -->
   <div class="lg:col-span-2 card p-6">
     <h3 class="font-display font-semibold mb-5">Personal details</h3>
-    <form class="space-y-4">
+    <form method="POST" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="grid sm:grid-cols-2 gap-4">
-        <div><label class="label">Full name</label><input type="text" class="input" value="{{ user.name }}"></div>
-        <div><label class="label">City</label><input type="text" class="input" value="{{ user.city }}"></div>
+        <div><label class="label">Full name</label><input name="full_name" type="text" class="input" value="{{ current_user.full_name }}"></div>
+        <div><label class="label">City</label><input name="city" type="text" class="input" value="{{ current_user.city or '' }}"></div>
       </div>
-      <div><label class="label">Email</label><input type="email" class="input" value="{{ user.email }}"></div>
-      <div><label class="label">Phone number</label><input type="tel" class="input" value="{{ user.phone }}"></div>
-      <button type="button" onclick="showToast('Profile updated')" class="btn-primary">Save changes</button>
+      <div><label class="label">Email</label><input name="email" type="email" class="input" value="{{ current_user.email }}"></div>
+      <div><label class="label">Phone number</label><input name="phone" type="tel" class="input" value="{{ current_user.phone }}"></div>
+      <button type="submit" class="btn-primary">Save changes</button>
+    </form>
+
+    <div class="route-thread my-7"></div>
+
+    <h3 class="font-display font-semibold mb-4">Saved locations</h3>
+    <div class="space-y-2 mb-4">
+      {% for loc in saved_locations %}
+      <div class="flex items-center gap-3 rounded-xl border border-charcoal-100 dark:border-charcoal-800 p-3">
+        <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600"></i>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium">{{ loc.label }}</p>
+          <p class="text-xs text-charcoal-400 truncate">{{ loc.address }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-sm text-charcoal-400">No saved locations yet.</p>
+      {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('dashboard.add_saved_location') }}" class="grid sm:grid-cols-3 gap-2">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input name="label" type="text" required class="input" placeholder="Label (e.g. Home)">
+      <input name="address" type="text" required class="input sm:col-span-1" placeholder="Address">
+      <button type="submit" class="btn-secondary">Add location</button>
+    </form>
+
+    <div class="route-thread my-7"></div>
+
+    <h3 class="font-display font-semibold mb-4">Emergency contacts</h3>
+    <div class="space-y-2 mb-4">
+      {% for c in emergency_contacts %}
+      <div class="flex items-center gap-3 rounded-xl border border-charcoal-100 dark:border-charcoal-800 p-3">
+        <i data-lucide="shield-alert" class="w-4 h-4 text-rose-500"></i>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium">{{ c.name }} <span class="text-charcoal-400 font-normal">({{ c.relationship_label or "Contact" }})</span></p>
+          <p class="text-xs text-charcoal-400">{{ c.phone }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-sm text-charcoal-400">No emergency contacts added yet — add one so the SOS button has someone to alert.</p>
+      {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('dashboard.add_emergency_contact') }}" class="grid sm:grid-cols-3 gap-2">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input name="name" type="text" required class="input" placeholder="Name">
+      <input name="phone" type="tel" required class="input" placeholder="Phone number">
+      <button type="submit" class="btn-secondary">Add contact</button>
     </form>
 
     <div class="route-thread my-7"></div>
 
     <h3 class="font-display font-semibold mb-5">Preferences</h3>
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium">Dark mode</p>
-          <p class="text-xs text-ink-400">Match your device or choose manually</p>
-        </div>
-        <button data-theme-toggle class="w-11 h-6 rounded-full bg-ink-200 dark:bg-canopy-500 relative transition-colors">
-          <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform dark:translate-x-5"></span>
-        </button>
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium">Dark mode</p>
+        <p class="text-xs text-charcoal-400">Match your device or choose manually</p>
       </div>
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium">Trip notifications</p>
-          <p class="text-xs text-ink-400">Driver updates, receipts, and promos</p>
-        </div>
-        <button class="w-11 h-6 rounded-full bg-canopy-500 relative transition-colors">
-          <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow translate-x-5 transition-transform"></span>
-        </button>
-      </div>
+      <button data-theme-toggle class="w-11 h-6 rounded-full bg-charcoal-200 dark:bg-emerald-500 relative transition-colors">
+        <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform dark:translate-x-5"></span>
+      </button>
     </div>
-
-    <div class="route-thread my-7"></div>
-
-    <button class="text-sm font-medium text-rose-500 hover:underline">Delete account</button>
   </div>
 </div>
 {% endblock %}

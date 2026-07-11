@@ -4,21 +4,21 @@
 
 <div class="lg:pl-72 min-h-screen flex flex-col">
   <!-- Topbar -->
-  <header class="sticky top-0 z-30 h-16 bg-sand-100/80 dark:bg-ink-950/80 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 flex items-center justify-between px-5 sm:px-8 shrink-0">
+  <header class="sticky top-0 z-30 h-16 bg-paper-100/80 dark:bg-charcoal-950/80 backdrop-blur-lg border-b border-charcoal-100 dark:border-charcoal-800 flex items-center justify-between px-5 sm:px-8 shrink-0">
     <div class="flex items-center gap-3">
-      <button data-sidebar-open aria-label="Open sidebar" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink-100 dark:hover:bg-ink-800">
+      <button data-sidebar-open aria-label="Open sidebar" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-charcoal-100 dark:hover:bg-charcoal-800">
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
       <h1 class="font-display font-semibold text-lg sm:text-xl">{% block dashboard_title %}Dashboard{% endblock %}</h1>
     </div>
     <div class="flex items-center gap-2">
-      <button data-theme-toggle aria-label="Toggle dark mode" class="w-9 h-9 rounded-full flex items-center justify-center text-ink-500 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800 transition-colors">
+      <button data-theme-toggle aria-label="Toggle dark mode" class="w-9 h-9 rounded-full flex items-center justify-center text-charcoal-500 hover:bg-charcoal-100 dark:text-charcoal-300 dark:hover:bg-charcoal-800 transition-colors">
         <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
         <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
       </button>
-      <a href="{{ url_for('dashboard.notifications') }}" class="relative w-9 h-9 rounded-full flex items-center justify-center text-ink-500 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800 transition-colors">
+      <a href="{{ url_for('dashboard.notifications') }}" class="relative w-9 h-9 rounded-full flex items-center justify-center text-charcoal-500 hover:bg-charcoal-100 dark:text-charcoal-300 dark:hover:bg-charcoal-800 transition-colors">
         <i data-lucide="bell" class="w-4 h-4"></i>
-        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-canopy-500"></span>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500"></span>
       </a>
       <a href="{{ url_for('booking.ride') }}" class="btn-primary hidden sm:inline-flex">
         <i data-lucide="plus" class="w-4 h-4"></i> New booking
