@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Cookie Policy — {{ app_name }}{% endblock %}
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<section class="max-w-3xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
+  <p class="eyebrow mb-3">Legal</p>
+  <h1 class="section-heading mb-2">Cookie Policy</h1>
+  <p class="text-sm text-charcoal-400 mb-10">Last updated July 2026</p>
+
+  <div class="space-y-8 text-charcoal-600 dark:text-charcoal-300 text-sm sm:text-base leading-relaxed">
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">Essential cookies</h2>
+      <p>MoveX uses a session cookie to keep you logged in and a CSRF token cookie to protect forms from cross-site request forgery. These are required for the platform to function and can't be disabled.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">Preference cookies</h2>
+      <p>A local preference (stored in your browser, not a cookie) remembers your dark/light mode choice between visits.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">Analytics</h2>
+      <p>MoveX does not currently use third-party advertising or tracking cookies. If that changes, this page will be updated and, where required, you'll be asked for consent.</p>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}

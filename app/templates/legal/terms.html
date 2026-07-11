@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Terms & Conditions — {{ app_name }}{% endblock %}
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<section class="max-w-3xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
+  <p class="eyebrow mb-3">Legal</p>
+  <h1 class="section-heading mb-2">Terms &amp; Conditions</h1>
+  <p class="text-sm text-charcoal-400 mb-10">Last updated July 2026</p>
+
+  <div class="space-y-8 text-charcoal-600 dark:text-charcoal-300 text-sm sm:text-base leading-relaxed">
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">1. The MoveX platform</h2>
+      <p>MoveX connects passengers and businesses who need transportation or delivery with independent drivers who provide it. MoveX is a technology platform — drivers are independent contractors, not MoveX employees.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">2. Accounts</h2>
+      <p>You must provide accurate registration information and keep your password secure. You're responsible for activity on your account. MoveX may suspend accounts that violate these terms or platform safety policies.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">3. Fares and payments</h2>
+      <p>Fare estimates are shown before you confirm a booking based on distance and time; the final fare may vary slightly based on the actual route taken. Payments can be made via MoveX Wallet, cash, or supported card processors (Flutterwave, Paystack).</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">4. Driver obligations</h2>
+      <p>Drivers must maintain a valid license, vehicle registration, and insurance, and must pass MoveX's background check and vehicle inspection before accepting trips. MoveX may deactivate driver accounts that fail to meet safety or conduct standards.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">5. Cancellations</h2>
+      <p>Passengers and drivers may cancel a trip before it begins. Repeated cancellations may affect your account standing. Completed trips cannot be cancelled or refunded except where required by law or at MoveX's discretion.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">6. Limitation of liability</h2>
+      <p>MoveX facilitates the connection between riders/senders and drivers but is not liable for the conduct of independent drivers or passengers, except as required by applicable law.</p>
+    </div>
+    <div>
+      <h2 class="font-display font-semibold text-lg text-charcoal-900 dark:text-white mb-2">7. Changes to these terms</h2>
+      <p>We may update these terms from time to time. Continued use of MoveX after an update constitutes acceptance of the revised terms.</p>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}
