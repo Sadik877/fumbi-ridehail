@@ -8,48 +8,63 @@
 
   {% if submitted %}
   <div data-reveal class="card p-10 text-center max-w-lg mx-auto">
-    <div class="w-16 h-16 rounded-full bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center mx-auto mb-6">
-      <i data-lucide="check-circle-2" class="w-8 h-8 text-canopy-600 dark:text-canopy-400"></i>
+    <div class="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-6">
+      <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-600 dark:text-emerald-400"></i>
     </div>
     <h1 class="font-display text-2xl font-semibold mb-2">Application received</h1>
-    <p class="text-sm text-ink-500 dark:text-ink-400 leading-relaxed mb-8">Thanks for applying. Our team reviews documents within 2–3 business days — we'll email you as soon as your account is approved.</p>
+    <p class="text-sm text-charcoal-500 dark:text-charcoal-400 leading-relaxed mb-8">Thanks for applying. Our team reviews documents within 2–3 business days — we'll email you as soon as your account is approved.</p>
     <a href="{{ url_for('main.landing') }}" class="btn-primary">Back to home</a>
   </div>
   {% else %}
 
   <div class="mb-10" data-reveal>
-    <p class="eyebrow mb-3">Drive with Fumbi</p>
+    <p class="eyebrow mb-3">Drive with MoveX</p>
     <h1 class="section-heading mb-3">Earn on your own schedule.</h1>
-    <p class="text-ink-500 dark:text-ink-400 max-w-xl">Lower commission than the industry standard, weekly payouts, and support that actually picks up. Tell us about yourself to get started.</p>
+    <p class="text-charcoal-500 dark:text-charcoal-400 max-w-xl">Lower commission than the industry standard, weekly payouts, and support that actually picks up. Tell us about yourself to get started.</p>
   </div>
 
   <div class="grid sm:grid-cols-3 gap-4 mb-10" data-reveal data-reveal-delay="100">
     <div class="card p-4 text-center">
-      <p class="font-display text-2xl font-semibold text-canopy-600 dark:text-canopy-400">12%</p>
-      <p class="text-xs text-ink-500 mt-1">Commission — well below industry average</p>
+      <p class="font-display text-2xl font-semibold text-emerald-600 dark:text-emerald-400">12%</p>
+      <p class="text-xs text-charcoal-500 mt-1">Commission — well below industry average</p>
     </div>
     <div class="card p-4 text-center">
-      <p class="font-display text-2xl font-semibold text-canopy-600 dark:text-canopy-400">Weekly</p>
-      <p class="text-xs text-ink-500 mt-1">Payouts straight to mobile money or bank</p>
+      <p class="font-display text-2xl font-semibold text-emerald-600 dark:text-emerald-400">Weekly</p>
+      <p class="text-xs text-charcoal-500 mt-1">Payouts straight to mobile money or bank</p>
     </div>
     <div class="card p-4 text-center">
-      <p class="font-display text-2xl font-semibold text-canopy-600 dark:text-canopy-400">2–3 days</p>
-      <p class="text-xs text-ink-500 mt-1">Typical application review time</p>
+      <p class="font-display text-2xl font-semibold text-emerald-600 dark:text-emerald-400">2–3 days</p>
+      <p class="text-xs text-charcoal-500 mt-1">Typical application review time</p>
     </div>
   </div>
 
-  <form method="POST" enctype="multipart/form-data" class="card p-6 sm:p-8 space-y-8" data-reveal data-reveal-delay="150">
+  {% include "partials/form_errors.html" %}
+  <form method="POST" class="card p-6 sm:p-8 space-y-8" data-reveal data-reveal-delay="150">
+    {{ form.csrf_token }}
 
     <div>
-      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-canopy-500 text-ink-950 text-xs font-bold flex items-center justify-center">1</span>Personal details</h2>
+      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-500 text-charcoal-950 text-xs font-bold flex items-center justify-center">1</span>Personal details</h2>
       <div class="grid sm:grid-cols-2 gap-4">
-        <div><label class="label">Full name</label><input type="text" required class="input" placeholder="Tendai Mukamuri"></div>
-        <div><label class="label">Phone number</label><input type="tel" required class="input" placeholder="+263 77 123 4567"></div>
-        <div><label class="label">Email</label><input type="email" required class="input" placeholder="you@example.com"></div>
-        <div><label class="label">City</label>
-          <select class="input">
-            <option>Harare</option><option>Bulawayo</option><option>Lagos</option><option>Accra</option><option>Nairobi</option>
-          </select>
+        <div><label class="label">Full name</label><input name="full_name" type="text" required class="input" placeholder="Tendai Mukamuri" value="{{ form.full_name.data or '' }}"></div>
+        <div><label class="label">Phone number</label><input name="phone" type="tel" required class="input" placeholder="+234 801 234 5678" value="{{ form.phone.data or '' }}"></div>
+        <div><label class="label">Email</label><input name="email" type="email" required class="input" placeholder="you@example.com" value="{{ form.email.data or '' }}"></div>
+        <div><label class="label">City</label><input name="city" type="text" class="input" placeholder="Lagos" value="{{ form.city.data or '' }}"></div>
+        <div><label class="label">Password</label><input name="password" type="password" required class="input" placeholder="At least 8 characters"></div>
+        <div><label class="label">Confirm password</label><input name="confirm_password" type="password" required class="input" placeholder="Re-enter your password"></div>
+      </div>
+    </div>
+
+    <div class="route-thread"></div>
+
+    <div>
+      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-500 text-charcoal-950 text-xs font-bold flex items-center justify-center">2</span>License &amp; vehicle information</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label class="label">Driver's license number</label><input name="license_number" type="text" required class="input" placeholder="LIC-00234871"></div>
+        <div><label class="label">Vehicle make &amp; model</label><input name="vehicle_make" type="text" required class="input" placeholder="Toyota Corolla"></div>
+        <div><label class="label">Year</label><input name="vehicle_year" type="number" class="input" placeholder="2019"></div>
+        <div><label class="label">License plate</label><input name="plate_number" type="text" required class="input" placeholder="LND 234 KJ"></div>
+        <div class="sm:col-span-2"><label class="label">Vehicle type</label>
+          <select name="vehicle_type" class="input"><option value="standard">Standard</option><option value="comfort">Comfort</option><option value="xl">XL</option></select>
         </div>
       </div>
     </div>
@@ -57,34 +72,20 @@
     <div class="route-thread"></div>
 
     <div>
-      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-canopy-500 text-ink-950 text-xs font-bold flex items-center justify-center">2</span>Vehicle information</h2>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div><label class="label">Vehicle make &amp; model</label><input type="text" required class="input" placeholder="Toyota Axio"></div>
-        <div><label class="label">Year</label><input type="number" required class="input" placeholder="2019"></div>
-        <div><label class="label">License plate</label><input type="text" required class="input" placeholder="AEX 4471"></div>
-        <div><label class="label">Vehicle type</label>
-          <select class="input"><option>Standard</option><option>Comfort</option><option>XL</option></select>
-        </div>
-      </div>
-    </div>
-
-    <div class="route-thread"></div>
-
-    <div>
-      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-canopy-500 text-ink-950 text-xs font-bold flex items-center justify-center">3</span>Documents</h2>
-      <div class="grid sm:grid-cols-2 gap-4">
+      <h2 class="font-display font-semibold text-lg mb-4 flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-emerald-500 text-charcoal-950 text-xs font-bold flex items-center justify-center">3</span>Documents</h2>
+      <p class="text-xs text-charcoal-400 mb-4">Upload these after your account is created — from your driver dashboard once your application is submitted.</p>
+      <div class="grid sm:grid-cols-2 gap-4 opacity-60 pointer-events-none">
         {% for doc in ["Driver's license", "National ID", "Vehicle registration", "Proof of insurance"] %}
-        <label class="flex items-center gap-3 rounded-xl border-2 border-dashed border-ink-200 dark:border-ink-700 p-4 cursor-pointer hover:border-canopy-500 transition-colors">
-          <input type="file" class="hidden">
-          <i data-lucide="upload" class="w-5 h-5 text-ink-400 shrink-0"></i>
-          <span class="text-sm text-ink-600 dark:text-ink-300">{{ doc }}</span>
-        </label>
+        <div class="flex items-center gap-3 rounded-xl border-2 border-dashed border-charcoal-200 dark:border-charcoal-700 p-4">
+          <i data-lucide="upload" class="w-5 h-5 text-charcoal-400 shrink-0"></i>
+          <span class="text-sm text-charcoal-600 dark:text-charcoal-300">{{ doc }}</span>
+        </div>
         {% endfor %}
       </div>
     </div>
 
     <button type="submit" class="btn-primary w-full !py-3.5">Submit application <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-    <p class="text-xs text-ink-400 text-center">By applying, you agree to Fumbi's Driver Terms and background check policy.</p>
+    <p class="text-xs text-charcoal-400 text-center">By applying, you agree to MoveX's Driver Terms and background check policy.</p>
   </form>
   {% endif %}
 </section>

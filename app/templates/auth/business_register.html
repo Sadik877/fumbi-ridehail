@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Register your business — {{ app_name }}{% endblock %}
+{% block body %}
+{% include "partials/navbar.html" %}
+{% include "partials/mobile_nav.html" %}
+
+<section class="max-w-2xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+  <div class="mb-8" data-reveal>
+    <p class="eyebrow mb-3">MoveX for Business</p>
+    <h1 class="section-heading mb-3">Bulk delivery, invoicing, and reporting in one place.</h1>
+    <p class="text-charcoal-500 dark:text-charcoal-400">Perfect for retailers, restaurants, and teams that ship regularly. Verification typically completes within one business day.</p>
+  </div>
+
+  {% include "partials/form_errors.html" %}
+  <form method="POST" class="card p-6 sm:p-8 space-y-4" data-reveal data-reveal-delay="100">
+    {{ form.csrf_token }}
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="label">Company name</label><input name="company_name" type="text" required class="input" placeholder="Lagos Fresh Foods Ltd"></div>
+      <div><label class="label">Industry</label><input name="industry" type="text" class="input" placeholder="Retail, F&amp;B, logistics…"></div>
+      <div><label class="label">Registration number</label><input name="registration_number" type="text" class="input" placeholder="RC-123456"></div>
+      <div><label class="label">City</label><input name="city" type="text" class="input" placeholder="Lagos"></div>
+      <div><label class="label">Contact full name</label><input name="full_name" type="text" required class="input" placeholder="Amaka Okafor"></div>
+      <div><label class="label">Phone number</label><input name="phone" type="tel" required class="input" placeholder="+234 801 234 5678"></div>
+      <div><label class="label">Email</label><input name="email" type="email" required class="input" placeholder="ops@yourcompany.com"></div>
+      <div></div>
+      <div><label class="label">Password</label><input name="password" type="password" required class="input" placeholder="At least 8 characters"></div>
+      <div><label class="label">Confirm password</label><input name="confirm_password" type="password" required class="input" placeholder="Re-enter your password"></div>
+    </div>
+    <button type="submit" class="btn-primary w-full !py-3.5 mt-2">Create business account <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+  </form>
+
+  <p class="text-xs text-charcoal-400 mt-6 text-center">
+    Looking to ride or drive instead? <a href="{{ url_for('auth.register') }}" class="text-emerald-600 dark:text-emerald-400 font-medium hover:underline">Create a passenger account</a>
+    &middot; <a href="{{ url_for('auth.driver_register') }}" class="text-emerald-600 dark:text-emerald-400 font-medium hover:underline">Register as a driver</a>
+  </p>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}
