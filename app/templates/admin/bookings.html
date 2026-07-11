@@ -1,0 +1,38 @@
+{% extends "admin/_base.html" %}
+{% block title %}Bookings — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Bookings{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+  {% for key, label in [('all','All'), ('pending','Pending'), ('accepted','Accepted'), ('completed','Completed'), ('cancelled','Cancelled')] %}
+  <a href="{{ url_for('admin.bookings', status=key) }}"
+     class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
+     {{ 'bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950' if status == key else 'bg-white dark:bg-charcoal-900 border border-charcoal-200 dark:border-charcoal-700 text-charcoal-600 dark:text-charcoal-300' }}">
+    {{ label }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if bookings %}
+<div class="card overflow-hidden divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+  {% for b in bookings %}
+  {% set obj = b.obj %}
+  <div class="flex items-center gap-4 px-6 py-4">
+    <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+      <i data-lucide="{{ 'car' if b.kind == 'ride' else 'package' }}" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-medium truncate">{{ obj.reference }} · {{ obj.pickup_address }} → {{ obj.dropoff_address }}</p>
+      <p class="text-xs text-charcoal-400">{{ obj.created_at.strftime('%b %-d, %Y · %I:%M %p') }}</p>
+    </div>
+    <span class="font-mono text-sm hidden sm:inline">₦{{ "%.2f"|format(obj.final_fare or obj.fare_estimate_low or 0) }}</span>
+    {% if obj.status.value == 'completed' %}<span class="badge-success">Completed</span>
+    {% elif obj.status.value == 'cancelled' %}<span class="badge-danger">Cancelled</span>
+    {% else %}<span class="badge-neutral">{{ obj.status.value|capitalize }}</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card p-12 text-center"><p class="text-sm text-charcoal-400">No bookings match this filter.</p></div>
+{% endif %}
+{% endblock %}

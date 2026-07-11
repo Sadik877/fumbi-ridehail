@@ -1,0 +1,42 @@
+{% extends "admin/_base.html" %}
+{% block title %}Drivers — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Drivers{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex items-center gap-2 mb-6">
+  {% for key, label in [('pending','Pending'), ('approved','Approved'), ('all','All')] %}
+  <a href="{{ url_for('admin.drivers', status=key) }}"
+     class="px-4 py-2 rounded-full text-sm font-medium transition-colors
+     {{ 'bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950' if status == key else 'bg-white dark:bg-charcoal-900 border border-charcoal-200 dark:border-charcoal-700 text-charcoal-600 dark:text-charcoal-300' }}">
+    {{ label }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if drivers %}
+<div class="card overflow-hidden divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+  {% for d in drivers %}
+  <div class="flex items-center gap-4 px-6 py-4">
+    <div class="w-10 h-10 rounded-full bg-emerald-500 text-charcoal-950 font-display font-semibold flex items-center justify-center shrink-0">{{ d.user.full_name[:2]|upper }}</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-medium truncate">{{ d.user.full_name }}</p>
+      <p class="text-xs text-charcoal-400">License {{ d.license_number }} · {{ d.user.email }}</p>
+    </div>
+    <span class="badge-neutral capitalize">{{ d.approval_status }}</span>
+    {% if not d.is_approved %}
+    <form method="POST" action="{{ url_for('admin.approve_driver', profile_id=d.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn-secondary !py-1.5 !px-3 text-xs">Approve</button>
+    </form>
+    <form method="POST" action="{{ url_for('admin.reject_driver', profile_id=d.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="text-xs font-medium text-rose-500 hover:underline">Reject</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card p-12 text-center"><p class="text-sm text-charcoal-400">No drivers in this view.</p></div>
+{% endif %}
+{% endblock %}

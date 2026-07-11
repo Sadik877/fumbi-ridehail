@@ -1,0 +1,56 @@
+{% extends "admin/_base.html" %}
+{% block title %}Admin dashboard — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Overview{% endblock %}
+
+{% block dashboard_content %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Total users</p><p class="font-mono text-2xl font-semibold">{{ stats.total_users }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Total drivers</p><p class="font-mono text-2xl font-semibold">{{ stats.total_drivers }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Pending approvals</p><p class="font-mono text-2xl font-semibold text-amber-500">{{ stats.pending_driver_approvals }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Open tickets</p><p class="font-mono text-2xl font-semibold">{{ stats.open_tickets }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Total rides</p><p class="font-mono text-2xl font-semibold">{{ stats.total_rides }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Total deliveries</p><p class="font-mono text-2xl font-semibold">{{ stats.total_deliveries }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Rides (30 days)</p><p class="font-mono text-2xl font-semibold">{{ stats.rides_last_30d }}</p></div>
+  <div class="card p-5"><p class="text-xs text-charcoal-400 mb-2">Gross transaction volume</p><p class="font-mono text-2xl font-semibold text-emerald-600 dark:text-emerald-400">₦{{ "%.2f"|format(stats.gross_transaction_volume) }}</p></div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <div class="card overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal-100 dark:border-charcoal-800">
+      <h3 class="font-display font-semibold">Recent users</h3>
+      <a href="{{ url_for('admin.users') }}" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:underline">View all</a>
+    </div>
+    <div class="divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+      {% for u in recent_users %}
+      <div class="flex items-center gap-3 px-6 py-4">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 text-charcoal-950 font-display font-semibold text-xs flex items-center justify-center shrink-0">{{ u.full_name[:2]|upper }}</div>
+        <div class="flex-1 min-w-0"><p class="text-sm font-medium truncate">{{ u.full_name }}</p><p class="text-xs text-charcoal-400 truncate">{{ u.email }}</p></div>
+        <span class="badge-neutral capitalize">{{ u.role.value }}</span>
+      </div>
+      {% else %}
+      <div class="p-8 text-center text-sm text-charcoal-400">No users yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal-100 dark:border-charcoal-800">
+      <h3 class="font-display font-semibold">Pending driver approvals</h3>
+      <a href="{{ url_for('admin.drivers') }}" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:underline">View all</a>
+    </div>
+    <div class="divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+      {% for d in pending_drivers %}
+      <div class="flex items-center gap-3 px-6 py-4">
+        <div class="flex-1 min-w-0"><p class="text-sm font-medium truncate">{{ d.user.full_name }}</p><p class="text-xs text-charcoal-400 truncate">License {{ d.license_number }}</p></div>
+        <form method="POST" action="{{ url_for('admin.approve_driver', profile_id=d.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn-secondary !py-1.5 !px-3 text-xs">Approve</button>
+        </form>
+      </div>
+      {% else %}
+      <div class="p-8 text-center text-sm text-charcoal-400">Nothing pending.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

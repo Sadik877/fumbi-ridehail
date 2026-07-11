@@ -1,0 +1,38 @@
+{% extends "admin/_base.html" %}
+{% block title %}Support — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Support{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex items-center gap-2 mb-6">
+  {% for key, label in [('open','Open'), ('in_progress','In progress'), ('resolved','Resolved'), ('all','All')] %}
+  <a href="{{ url_for('admin.support', status=key) }}"
+     class="px-4 py-2 rounded-full text-sm font-medium transition-colors
+     {{ 'bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950' if status == key else 'bg-white dark:bg-charcoal-900 border border-charcoal-200 dark:border-charcoal-700 text-charcoal-600 dark:text-charcoal-300' }}">
+    {{ label }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if tickets %}
+<div class="card overflow-hidden divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+  {% for t in tickets %}
+  <div class="px-6 py-5">
+    <div class="flex items-center justify-between mb-1">
+      <p class="text-sm font-medium">{{ t.subject }}</p>
+      <span class="badge-neutral capitalize">{{ t.status.value.replace('_',' ') }}</span>
+    </div>
+    <p class="text-xs text-charcoal-400 mb-2">{{ t.user.full_name }} · {{ t.created_at.strftime('%b %-d, %Y') }}</p>
+    <p class="text-sm text-charcoal-600 dark:text-charcoal-300 mb-3">{{ t.message }}</p>
+    {% if t.status.value != 'resolved' and t.status.value != 'closed' %}
+    <form method="POST" action="{{ url_for('admin.resolve_ticket', ticket_id=t.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn-secondary !py-1.5 !px-3 text-xs">Mark resolved</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card p-12 text-center"><p class="text-sm text-charcoal-400">No tickets in this view.</p></div>
+{% endif %}
+{% endblock %}
