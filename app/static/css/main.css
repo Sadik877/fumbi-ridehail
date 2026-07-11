@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Fumbi Design System — supplementary CSS
+   MoveX Design System — supplementary CSS
    (Component classes live in base.html via Tailwind's @layer; this file
    holds raw keyframes and effects Tailwind utilities can't express.)
    ========================================================================== */
@@ -7,7 +7,7 @@
 html { color-scheme: light; }
 html.dark { color-scheme: dark; }
 
-::selection { background: #0f9d63; color: white; }
+::selection { background: #059669; color: white; }
 
 /* Custom scrollbar --------------------------------------------------- */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -26,8 +26,8 @@ html.dark { color-scheme: dark; }
   width: 100%;
   background: repeating-linear-gradient(
     90deg,
-    theme('colors.ink.200') 0px,
-    theme('colors.ink.200') 6px,
+    theme('colors.charcoal.200') 0px,
+    theme('colors.charcoal.200') 6px,
     transparent 6px,
     transparent 14px
   );
@@ -35,8 +35,8 @@ html.dark { color-scheme: dark; }
 .dark .route-thread {
   background: repeating-linear-gradient(
     90deg,
-    theme('colors.ink.700') 0px,
-    theme('colors.ink.700') 6px,
+    theme('colors.charcoal.700') 0px,
+    theme('colors.charcoal.700') 6px,
     transparent 6px,
     transparent 14px
   );
@@ -50,7 +50,7 @@ html.dark { color-scheme: dark; }
   height: 10px;
   margin-top: -5px;
   border-radius: 999px;
-  background: theme('colors.canopy.500');
+  background: theme('colors.emerald.500');
   box-shadow: 0 0 0 4px rgba(15,157,99,0.16);
   animation: thread-travel 5s linear infinite;
 }
@@ -66,10 +66,10 @@ html.dark { color-scheme: dark; }
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: theme('colors.ink.100');
+  background-color: theme('colors.charcoal.100');
   border-radius: 0.75rem;
 }
-.dark .skeleton { background-color: theme('colors.ink.800'); }
+.dark .skeleton { background-color: theme('colors.charcoal.800'); }
 .skeleton::after {
   content: '';
   position: absolute;
@@ -122,6 +122,6 @@ html.dark { color-scheme: dark; }
 
 /* Focus visibility, kept even where Tailwind's ring utilities aren't used */
 a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 2px solid theme('colors.canopy.500');
+  outline: 2px solid theme('colors.emerald.500');
   outline-offset: 2px;
 }
