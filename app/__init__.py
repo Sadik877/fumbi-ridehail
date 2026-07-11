@@ -111,6 +111,22 @@ def create_app(config_name: str = None) -> Flask:
 
 
 def register_cli(app: Flask):
+    @app.cli.command("init-db")
+    def init_db():
+        """Create all tables directly from the current models.
+
+        This is a pragmatic bootstrap for environments without shell access
+        (e.g. Render's free tier) where running `flask db init/migrate` isn't
+        practical. It's equivalent to a first migration's "upgrade" for a
+        brand-new, empty database. Once you have a local dev environment
+        with git access, switch to real Flask-Migrate migrations for any
+        schema changes after this point — repeatedly calling this command
+        is safe (create_all only creates missing tables, it never drops or
+        alters existing ones) but it won't apply ALTER TABLE-style changes.
+        """
+        db.create_all()
+        print("Tables created (or already existed).")
+
     @app.cli.command("seed-db")
     def seed_db():
         """Populate vehicle types, an admin account, and sample public reviews."""
