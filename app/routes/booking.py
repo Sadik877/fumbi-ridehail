@@ -2,11 +2,12 @@ from datetime import datetime
 
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 
 from app.extensions import db, limiter
 from app.forms import RideBookingForm, DeliveryBookingForm
 from app.models import (
-    RideBooking, DeliveryBooking, VehicleType, BookingStatus, UserRole, ParcelSize,
+    RideBooking, DeliveryBooking, VehicleType, BookingStatus, UserRole, ParcelSize, DriverProfile,
 )
 from app.services import maps, pricing
 from app.services.notifications import notify
@@ -46,8 +47,12 @@ def delivery():
 def history():
     status = request.args.get("status", "all")
 
-    ride_query = RideBooking.query.filter_by(passenger_id=current_user.id)
-    delivery_query = DeliveryBooking.query.filter_by(sender_id=current_user.id)
+    ride_query = RideBooking.query.options(
+        joinedload(RideBooking.driver).joinedload(DriverProfile.user)
+    ).filter_by(passenger_id=current_user.id)
+    delivery_query = DeliveryBooking.query.options(
+        joinedload(DeliveryBooking.driver).joinedload(DriverProfile.user)
+    ).filter_by(sender_id=current_user.id)
     if status != "all":
         ride_query = ride_query.filter_by(status=BookingStatus(status))
         delivery_query = delivery_query.filter_by(status=BookingStatus(status))

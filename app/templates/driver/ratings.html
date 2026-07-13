@@ -1,0 +1,35 @@
+{% extends "driver/_base.html" %}
+{% block title %}Ratings — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Ratings{% endblock %}
+
+{% block dashboard_content %}
+<div class="card p-6 mb-6 flex items-center gap-4">
+  <p class="font-mono text-4xl font-semibold">{{ "%.1f"|format(avg) }}</p>
+  <div>
+    <div class="flex gap-0.5">
+      {% for i in range(5) %}<i data-lucide="star" class="w-4 h-4 {{ 'fill-emerald-500 text-emerald-500' if i < avg|round(0,'floor') else 'text-charcoal-200 dark:text-charcoal-700' }}"></i>{% endfor %}
+    </div>
+    <p class="text-xs text-charcoal-400 mt-1">Average across all rated trips</p>
+  </div>
+</div>
+
+{% if ratings %}
+<div class="card overflow-hidden divide-y divide-charcoal-50 dark:divide-charcoal-800/60">
+  {% for r in ratings %}
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-1">
+      <div class="flex gap-0.5">
+        {% for _ in range(r.stars) %}<i data-lucide="star" class="w-3.5 h-3.5 fill-emerald-500 text-emerald-500"></i>{% endfor %}
+      </div>
+      <span class="text-xs text-charcoal-400">{{ r.created_at.strftime('%b %-d, %Y') }}</span>
+    </div>
+    {% if r.comment %}<p class="text-sm text-charcoal-600 dark:text-charcoal-300">{{ r.comment }}</p>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card p-12 text-center">
+  <p class="text-sm text-charcoal-400">No ratings yet — they'll appear here after your first completed trip.</p>
+</div>
+{% endif %}
+{% endblock %}

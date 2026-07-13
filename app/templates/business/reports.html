@@ -1,0 +1,32 @@
+{% extends "business/_base.html" %}
+{% block title %}Reports — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Reports{% endblock %}
+
+{% block dashboard_content %}
+{% if by_month %}
+<div class="card overflow-hidden">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-charcoal-100 dark:border-charcoal-800 text-left text-xs uppercase tracking-wide text-charcoal-400">
+        <th class="px-5 py-3 font-medium">Month</th>
+        <th class="px-5 py-3 font-medium text-right">Deliveries</th>
+        <th class="px-5 py-3 font-medium text-right">Spend</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for month, data in by_month.items() %}
+      <tr class="border-b border-charcoal-50 dark:border-charcoal-800/60 last:border-0">
+        <td class="px-5 py-4 font-medium">{{ month }}</td>
+        <td class="px-5 py-4 text-right">{{ data.count }}</td>
+        <td class="px-5 py-4 text-right font-mono font-medium">₦{{ "%.2f"|format(data.spend) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card p-12 text-center">
+  <p class="text-sm text-charcoal-400">No delivery data yet — reports build automatically as you send deliveries.</p>
+</div>
+{% endif %}
+{% endblock %}

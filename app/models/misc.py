@@ -26,8 +26,8 @@ class Rating(db.Model):
     ride_booking_id = db.Column(db.Integer, db.ForeignKey("ride_bookings.id"), nullable=True)
     delivery_booking_id = db.Column(db.Integer, db.ForeignKey("delivery_bookings.id"), nullable=True)
 
-    rater_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    ratee_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    rater_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    ratee_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
 
     stars = db.Column(db.SmallInteger, nullable=False)
     comment = db.Column(db.String(500))
@@ -43,12 +43,14 @@ class Review(db.Model):
     __tablename__ = "reviews"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     title = db.Column(db.String(150))
     body = db.Column(db.String(1000), nullable=False)
     stars = db.Column(db.SmallInteger, nullable=False, default=5)
     is_published = db.Column(db.Boolean, default=False, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User")
 
 
 class DiscountType(str, enum.Enum):
@@ -93,7 +95,7 @@ class SupportTicket(db.Model):
     __tablename__ = "support_tickets"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     subject = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
     topic = db.Column(db.String(60), default="General")
@@ -107,7 +109,7 @@ class SavedLocation(db.Model):
     __tablename__ = "saved_locations"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     label = db.Column(db.String(60), nullable=False)  # e.g. "Home", "Office"
     address = db.Column(db.String(255), nullable=False)
     lat = db.Column(db.Float)
@@ -120,7 +122,7 @@ class EmergencyContact(db.Model):
     __tablename__ = "emergency_contacts"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     name = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(32), nullable=False)
     relationship_label = db.Column(db.String(60))

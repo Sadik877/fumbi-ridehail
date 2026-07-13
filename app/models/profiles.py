@@ -7,13 +7,14 @@ class PassengerProfile(db.Model):
     __tablename__ = "passenger_profiles"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False, index=True)
     home_address = db.Column(db.String(255))
     rating_avg = db.Column(db.Float, default=5.0)
     total_trips = db.Column(db.Integer, default=0)
     referral_code = db.Column(db.String(16), unique=True)
     referred_by_code = db.Column(db.String(16))
 
+    user = db.relationship("User", back_populates="passenger_profile")
     favorite_drivers = db.relationship(
         "FavoriteDriver", backref="passenger", lazy="dynamic", cascade="all, delete-orphan"
     )
@@ -34,16 +35,16 @@ class DriverProfile(db.Model):
     __tablename__ = "driver_profiles"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False, index=True)
 
     license_number = db.Column(db.String(64), unique=True, nullable=False)
     license_expiry = db.Column(db.Date)
     national_id_number = db.Column(db.String(64))
 
-    is_approved = db.Column(db.Boolean, default=False, nullable=False)
+    is_approved = db.Column(db.Boolean, default=False, nullable=False, index=True)
     approval_status = db.Column(db.String(20), default="pending")  # pending / approved / rejected
     background_check_status = db.Column(db.String(20), default="pending")
-    is_online = db.Column(db.Boolean, default=False, nullable=False)
+    is_online = db.Column(db.Boolean, default=False, nullable=False, index=True)
 
     rating_avg = db.Column(db.Float, default=5.0)
     total_trips = db.Column(db.Integer, default=0)
@@ -55,6 +56,7 @@ class DriverProfile(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    user = db.relationship("User", back_populates="driver_profile")
     vehicles = db.relationship(
         "Vehicle", backref="driver", lazy="dynamic", cascade="all, delete-orphan"
     )
@@ -99,7 +101,7 @@ class BusinessProfile(db.Model):
     __tablename__ = "business_profiles"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False, index=True)
 
     company_name = db.Column(db.String(150), nullable=False)
     registration_number = db.Column(db.String(80))
@@ -107,3 +109,5 @@ class BusinessProfile(db.Model):
     billing_address = db.Column(db.String(255))
     is_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User", back_populates="business_profile")

@@ -27,11 +27,13 @@ class Wallet(db.Model):
     __tablename__ = "wallets"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=True, nullable=False, index=True)
     balance = db.Column(db.Numeric(12, 2), default=0, nullable=False)
     pending_balance = db.Column(db.Numeric(12, 2), default=0, nullable=False)
     currency = db.Column(db.String(3), default="NGN", nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship("User", back_populates="wallet")
 
     transactions = db.relationship(
         "Transaction", backref="wallet", lazy="dynamic", cascade="all, delete-orphan",
@@ -43,7 +45,7 @@ class Transaction(db.Model):
     __tablename__ = "transactions"
 
     id = db.Column(db.Integer, primary_key=True)
-    wallet_id = db.Column(db.Integer, db.ForeignKey("wallets.id"), nullable=False)
+    wallet_id = db.Column(db.Integer, db.ForeignKey("wallets.id"), nullable=False, index=True)
     reference = db.Column(db.String(48), unique=True, default=lambda: f"TXN-{secrets.token_hex(6).upper()}")
 
     type = db.Column(db.Enum(TransactionType), nullable=False)

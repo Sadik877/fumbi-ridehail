@@ -42,14 +42,15 @@ def dashboard():
 def users():
     role_filter = request.args.get("role", "all")
     q = request.args.get("q", "").strip()
+    page = request.args.get("page", 1, type=int)
     query = User.query
     if role_filter != "all":
         query = query.filter_by(role=UserRole(role_filter))
     if q:
         like = f"%{q}%"
         query = query.filter(db.or_(User.full_name.ilike(like), User.email.ilike(like), User.phone.ilike(like)))
-    items = query.order_by(User.created_at.desc()).limit(100).all()
-    return render_template("admin/users.html", users=items, role_filter=role_filter, q=q)
+    pagination = query.order_by(User.created_at.desc()).paginate(page=page, per_page=25, error_out=False)
+    return render_template("admin/users.html", users=pagination.items, pagination=pagination, role_filter=role_filter, q=q)
 
 
 @admin_bp.route("/users/<int:user_id>/toggle-active", methods=["POST"])
@@ -114,8 +115,9 @@ def bookings():
 
 @admin_bp.route("/payments")
 def payments():
-    transactions = Transaction.query.order_by(Transaction.created_at.desc()).limit(100).all()
-    return render_template("admin/payments.html", transactions=transactions)
+    page = request.args.get("page", 1, type=int)
+    pagination = Transaction.query.order_by(Transaction.created_at.desc()).paginate(page=page, per_page=25, error_out=False)
+    return render_template("admin/payments.html", transactions=pagination.items, pagination=pagination)
 
 
 @admin_bp.route("/support")

@@ -62,6 +62,16 @@ def create_app(config_name: str = None) -> Flask:
             "app_tagline": app.config["APP_TAGLINE"],
         }
 
+    @app.template_filter("merge_query")
+    def merge_query(args_dict, **overrides):
+        """Used by partials/pagination.html to build a "next/previous page"
+        link that preserves existing filters (search terms, role filter,
+        etc.) while only changing the `page` parameter."""
+        from urllib.parse import urlencode
+
+        merged = {**args_dict, **overrides}
+        return urlencode(merged)
+
     # --- Security headers ------------------------------------------------------
     @app.after_request
     def set_security_headers(response):

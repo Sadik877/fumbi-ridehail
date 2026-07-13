@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 from app import content
 from app.extensions import db, limiter
@@ -27,7 +28,13 @@ def _live_stats():
 
 @main_bp.route("/")
 def landing():
-    reviews = Review.query.filter_by(is_published=True).order_by(Review.created_at.desc()).limit(3).all()
+    reviews = (
+        Review.query.options(joinedload(Review.user))
+        .filter_by(is_published=True)
+        .order_by(Review.created_at.desc())
+        .limit(3)
+        .all()
+    )
     return render_template(
         "landing.html",
         stats=_live_stats(),

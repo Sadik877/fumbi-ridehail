@@ -2,13 +2,39 @@ import os
 from datetime import timedelta
 
 
+class ConfigError(RuntimeError):
+    """Raised at startup when a required environment variable is missing.
+    Fails loudly and immediately rather than falling back to a silent
+    default that would mask a misconfigured deployment."""
+
+
 def _normalize_db_url(url: str) -> str:
-    """Render/Heroku-style Postgres URLs come as postgres://; SQLAlchemy 1.4+
-    requires the postgresql:// scheme. Normalize so DATABASE_URL can be
-    pasted straight from the provider dashboard without edits."""
-    if url and url.startswith("postgres://"):
+    """Render/Supabase/Heroku-style Postgres URLs come as postgres://;
+    SQLAlchemy 2.x requires the postgresql:// scheme. Normalizing here means
+    a connection string can be pasted straight from any provider's
+    dashboard (Render, Supabase, or otherwise) with no edits."""
+    if url.startswith("postgres://"):
         return url.replace("postgres://", "postgresql://", 1)
     return url
+
+
+def _require_database_url() -> str:
+    """PostgreSQL (via Render's managed database, Supabase, or any other
+    Postgres provider) is the only supported database — there is no SQLite
+    fallback. This is intentional: SQLite's on-disk file doesn't survive a
+    redeploy on most hosts (Render's free tier included), which silently
+    "loses" all data the moment the instance restarts. Failing fast here
+    with a clear message is far better than an app that boots, appears to
+    work, and quietly discards everything on the next deploy."""
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        raise ConfigError(
+            "DATABASE_URL is not set. This app requires a PostgreSQL "
+            "connection string (Render managed Postgres, Supabase, or any "
+            "other Postgres provider) — SQLite is not supported. Set "
+            "DATABASE_URL in your environment and restart."
+        )
+    return _normalize_db_url(url)
 
 
 class Config:
@@ -17,12 +43,13 @@ class Config:
 
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-change-me-in-production")
 
-    # --- Database ----------------------------------------------------------
-    SQLALCHEMY_DATABASE_URI = _normalize_db_url(
-        os.environ.get("DATABASE_URL", "sqlite:///" + os.path.join(os.getcwd(), "instance", "movex.db"))
-    )
+    # --- Database (PostgreSQL only — see _require_database_url) -----------
+    SQLALCHEMY_DATABASE_URI = _require_database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,  # drops stale connections instead of erroring on them
+        "pool_recycle": 300,     # recycle connections every 5 min (managed Postgres often kills idle ones sooner)
+    }
 
     # --- Sessions / cookies --------------------------------------------------
     SESSION_COOKIE_HTTPONLY = True
@@ -65,6 +92,14 @@ class Config:
     OSM_NOMINATIM_URL = os.environ.get("OSM_NOMINATIM_URL", "https://nominatim.openstreetmap.org")
     OSRM_ROUTING_URL = os.environ.get("OSRM_ROUTING_URL", "https://router.project-osrm.org")
 
+    # --- Supabase (optional) ----------------------------------------------------
+    # Not required for the database itself — DATABASE_URL alone is enough to
+    # use a Supabase Postgres instance via plain SQLAlchemy, which is what
+    # this app does. These two are only needed if you later enable Supabase
+    # Storage for file uploads (e.g. driver documents) instead of local disk.
+    SUPABASE_URL = os.environ.get("SUPABASE_URL")
+    SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -77,16 +112,8 @@ class ProductionConfig(Config):
     REMEMBER_COOKIE_SECURE = True
 
 
-class TestingConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-    WTF_CSRF_ENABLED = False
-    RATELIMIT_ENABLED = False
-
-
 config_map = {
     "development": DevelopmentConfig,
     "production": ProductionConfig,
-    "testing": TestingConfig,
     "default": DevelopmentConfig,
 }

@@ -9,19 +9,19 @@
     <div class="lg:col-span-2">
       <p class="eyebrow mb-3">Get in touch</p>
       <h1 class="font-display text-3xl sm:text-4xl font-semibold tracking-tight mb-4">We're here to help.</h1>
-      <p class="text-ink-500 dark:text-ink-400 leading-relaxed mb-8">Whether it's a question about a trip, a delivery, or partnering with Fumbi — send us a message and a real person will reply.</p>
+      <p class="text-charcoal-500 dark:text-charcoal-400 leading-relaxed mb-8">Whether it's a question about a trip, a delivery, or partnering with MoveX — send us a message and a real person will reply.</p>
 
       <div class="space-y-4">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center"><i data-lucide="mail" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i></div>
-          <span class="text-sm">support@fumbi.app</span>
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center"><i data-lucide="mail" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i></div>
+          <span class="text-sm">support@movex.app</span>
         </div>
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center"><i data-lucide="phone" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i></div>
-          <span class="text-sm">+263 800 386 24 (in-app support)</span>
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center"><i data-lucide="phone" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i></div>
+          <span class="text-sm">+234 700 668 3921 (in-app support)</span>
         </div>
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4 text-canopy-600 dark:text-canopy-400"></i></div>
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center"><i data-lucide="clock" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i></div>
           <span class="text-sm">Support available 24/7</span>
         </div>
       </div>
@@ -30,14 +30,16 @@
     <div class="lg:col-span-3">
       {% if submitted %}
       <div class="card p-10 text-center">
-        <div class="w-14 h-14 rounded-full bg-canopy-50 dark:bg-canopy-900/30 flex items-center justify-center mx-auto mb-5">
-          <i data-lucide="check-circle-2" class="w-7 h-7 text-canopy-600 dark:text-canopy-400"></i>
+        <div class="w-14 h-14 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-5">
+          <i data-lucide="check-circle-2" class="w-7 h-7 text-emerald-600 dark:text-emerald-400"></i>
         </div>
         <h3 class="font-display font-semibold text-lg mb-2">Thanks, {{ name }} — message sent</h3>
-        <p class="text-sm text-ink-500 dark:text-ink-400">Our team typically replies within a few hours.</p>
+        <p class="text-sm text-charcoal-500 dark:text-charcoal-400">Our team typically replies within a few hours.</p>
       </div>
       {% else %}
+      {% include "partials/form_errors.html" %}
       <form method="POST" action="{{ url_for('main.contact_submit') }}" class="card p-6 sm:p-7 space-y-4">
+        {{ form.csrf_token }}
         <div class="grid sm:grid-cols-2 gap-4">
           <div><label class="label">Name</label><input name="name" type="text" required class="input" placeholder="Your name"></div>
           <div><label class="label">Email</label><input name="email" type="email" required class="input" placeholder="you@example.com"></div>

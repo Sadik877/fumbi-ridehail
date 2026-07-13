@@ -1,0 +1,13 @@
+{% if pagination and pagination.pages > 1 %}
+<div class="flex items-center justify-between px-5 py-4 border-t border-charcoal-100 dark:border-charcoal-800">
+  <p class="text-xs text-charcoal-400">Page {{ pagination.page }} of {{ pagination.pages }} · {{ pagination.total }} total</p>
+  <div class="flex items-center gap-2">
+    {% if pagination.has_prev %}
+    <a href="{{ request.path }}?{{ request.args.to_dict()|merge_query(page=pagination.prev_num) }}" class="btn-ghost !py-1.5 !px-3 text-xs border border-charcoal-200 dark:border-charcoal-700">Previous</a>
+    {% endif %}
+    {% if pagination.has_next %}
+    <a href="{{ request.path }}?{{ request.args.to_dict()|merge_query(page=pagination.next_num) }}" class="btn-ghost !py-1.5 !px-3 text-xs border border-charcoal-200 dark:border-charcoal-700">Next</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends "driver/_base.html" %}
+{% block title %}Vehicles — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Vehicles{% endblock %}
+
+{% block dashboard_content %}
+<div class="grid lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-3">
+    {% for v in vehicles %}
+    <div class="card p-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+        <i data-lucide="car" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-medium">{{ v.make }} {{ v.model }} {{ '(' ~ v.year|string ~ ')' if v.year else '' }}</p>
+        <p class="text-xs text-charcoal-400">{{ v.plate_number }} {{ '· ' ~ v.color if v.color else '' }} {{ '· ' ~ v.vehicle_type.label if v.vehicle_type else '' }}</p>
+      </div>
+      {% if v.is_active %}<span class="badge-success">Active</span>{% else %}<span class="badge-neutral">Inactive</span>{% endif %}
+    </div>
+    {% else %}
+    <div class="card p-12 text-center">
+      <p class="text-sm text-charcoal-400">No vehicles registered yet — add one to start accepting rides.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card p-6 h-fit">
+    <h3 class="font-display font-semibold mb-4">Add a vehicle</h3>
+    <form method="POST" class="space-y-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div><label class="label">Make</label><input name="make" type="text" required class="input" placeholder="Toyota"></div>
+      <div><label class="label">Model</label><input name="model" type="text" required class="input" placeholder="Corolla"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="label">Year</label><input name="year" type="number" class="input" placeholder="2020"></div>
+        <div><label class="label">Color</label><input name="color" type="text" class="input" placeholder="Silver"></div>
+      </div>
+      <div><label class="label">Plate number</label><input name="plate_number" type="text" required class="input" placeholder="LND 234 KJ"></div>
+      <div><label class="label">Vehicle type</label>
+        <select name="vehicle_type" class="input">
+          {% for vt in vehicle_types %}<option value="{{ vt.code }}">{{ vt.label }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn-primary w-full">Add vehicle</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

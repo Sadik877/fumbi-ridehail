@@ -1,0 +1,42 @@
+{% extends "business/_base.html" %}
+{% block title %}Invoices — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Invoices{% endblock %}
+
+{% block dashboard_content %}
+<div class="card p-5 mb-6 flex items-center justify-between">
+  <div>
+    <p class="text-xs text-charcoal-400">Total invoiced (completed deliveries)</p>
+    <p class="font-mono text-2xl font-semibold text-emerald-600 dark:text-emerald-400">₦{{ "%.2f"|format(total) }}</p>
+  </div>
+  <button class="btn-ghost !px-3 !py-2 text-xs"><i data-lucide="download" class="w-4 h-4"></i>Export CSV</button>
+</div>
+
+{% if deliveries %}
+<div class="card overflow-hidden">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-charcoal-100 dark:border-charcoal-800 text-left text-xs uppercase tracking-wide text-charcoal-400">
+        <th class="px-5 py-3 font-medium">Reference</th>
+        <th class="px-5 py-3 font-medium">Recipient</th>
+        <th class="px-5 py-3 font-medium">Date</th>
+        <th class="px-5 py-3 font-medium text-right">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in deliveries %}
+      <tr class="border-b border-charcoal-50 dark:border-charcoal-800/60 last:border-0">
+        <td class="px-5 py-4 font-medium">{{ d.reference }}</td>
+        <td class="px-5 py-4 text-charcoal-600 dark:text-charcoal-300">{{ d.recipient_name }}</td>
+        <td class="px-5 py-4 text-charcoal-600 dark:text-charcoal-300">{{ d.updated_at.strftime('%b %-d, %Y') }}</td>
+        <td class="px-5 py-4 text-right font-mono font-medium">₦{{ "%.2f"|format(d.final_fare or 0) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card p-12 text-center">
+  <p class="text-sm text-charcoal-400">No completed deliveries to invoice yet.</p>
+</div>
+{% endif %}
+{% endblock %}

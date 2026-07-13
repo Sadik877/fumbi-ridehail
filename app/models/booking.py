@@ -23,8 +23,8 @@ class RideBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(20), unique=True, default=lambda: generate_booking_ref("RIDE"))
 
-    passenger_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    driver_id = db.Column(db.Integer, db.ForeignKey("driver_profiles.id"), nullable=True)
+    passenger_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    driver_id = db.Column(db.Integer, db.ForeignKey("driver_profiles.id"), nullable=True, index=True)
     vehicle_type_id = db.Column(db.Integer, db.ForeignKey("vehicle_types.id"))
 
     pickup_address = db.Column(db.String(255), nullable=False)
@@ -66,8 +66,8 @@ class DeliveryBooking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(20), unique=True, default=lambda: generate_booking_ref("DLV"))
 
-    sender_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    driver_id = db.Column(db.Integer, db.ForeignKey("driver_profiles.id"), nullable=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    driver_id = db.Column(db.Integer, db.ForeignKey("driver_profiles.id"), nullable=True, index=True)
 
     pickup_address = db.Column(db.String(255), nullable=False)
     pickup_lat = db.Column(db.Float)
@@ -104,8 +104,8 @@ class Trip(db.Model):
     __tablename__ = "trips"
 
     id = db.Column(db.Integer, primary_key=True)
-    ride_booking_id = db.Column(db.Integer, db.ForeignKey("ride_bookings.id"), nullable=True)
-    delivery_booking_id = db.Column(db.Integer, db.ForeignKey("delivery_bookings.id"), nullable=True)
+    ride_booking_id = db.Column(db.Integer, db.ForeignKey("ride_bookings.id"), nullable=True, index=True)
+    delivery_booking_id = db.Column(db.Integer, db.ForeignKey("delivery_bookings.id"), nullable=True, index=True)
 
     started_at = db.Column(db.DateTime)
     ended_at = db.Column(db.DateTime)

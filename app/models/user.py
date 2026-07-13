@@ -43,16 +43,21 @@ class User(UserMixin, db.Model):
     last_login_at = db.Column(db.DateTime)
 
     # --- Relationships ---------------------------------------------------
+    # The four 1:1 relationships below use explicit back_populates (rather
+    # than backref) so both sides of each relationship are declared and
+    # visible directly in each model file.
     passenger_profile = db.relationship(
-        "PassengerProfile", backref="user", uselist=False, cascade="all, delete-orphan"
+        "PassengerProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
     driver_profile = db.relationship(
-        "DriverProfile", backref="user", uselist=False, cascade="all, delete-orphan"
+        "DriverProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
     business_profile = db.relationship(
-        "BusinessProfile", backref="user", uselist=False, cascade="all, delete-orphan"
+        "BusinessProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
-    wallet = db.relationship("Wallet", backref="user", uselist=False, cascade="all, delete-orphan")
+    wallet = db.relationship(
+        "Wallet", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
     notifications = db.relationship(
         "Notification", backref="user", lazy="dynamic", cascade="all, delete-orphan"
     )

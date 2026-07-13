@@ -4,7 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}{{ app_name }} — {{ app_tagline }}{% endblock %}</title>
-<meta name="description" content="{% block meta_description %}Fumbi is premium ride-hailing and delivery, built for African cities. Book a ride or send a parcel in seconds.{% endblock %}">
+<meta name="description" content="{% block meta_description %}MoveX — Africa's next-generation mobility platform. Book a ride or send a parcel in seconds.{% endblock %}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<!-- Open Graph -->
+<meta property="og:title" content="{% block og_title %}{{ app_name }} — {{ app_tagline }}{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Africa's next-generation mobility platform connecting passengers, drivers, and businesses.{% endblock %}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:image" content="{{ url_for('static', filename='images/og-cover.png', _external=True) }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ app_name }} — {{ app_tagline }}">
+<meta name="twitter:description" content="Africa's next-generation mobility platform.">
+
+<link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
+<meta name="theme-color" content="#059669">
 
 <!-- Fonts: Space Grotesk (display) + Inter (body) + IBM Plex Mono (data/utility) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,35 +38,35 @@
     theme: {
       extend: {
         colors: {
-          canopy: {
-            50:  '#eafbf4',
-            100: '#c9f3e0',
-            200: '#93e6c1',
-            300: '#57d29e',
-            400: '#2fdd8f',
-            500: '#0f9d63',
-            600: '#0b6e4f',
-            700: '#0a5941',
-            800: '#0a4634',
-            900: '#08392b',
+          emerald: {
+            50:  '#ecfdf5',
+            100: '#d1fae5',
+            200: '#a7f3d0',
+            300: '#6ee7b7',
+            400: '#34d399',
+            500: '#10b981',
+            600: '#059669',
+            700: '#047857',
+            800: '#065f46',
+            900: '#064e3b',
           },
-          ink: {
-            50:  '#f4f5f5',
-            100: '#e4e6e6',
-            200: '#c7cbca',
-            300: '#a3a9a7',
-            400: '#767d7a',
-            500: '#5b6660',
-            600: '#454e49',
-            700: '#313835',
-            800: '#202523',
-            900: '#14171a',
-            950: '#0c0e10',
+          charcoal: {
+            50:  '#f6f6f7',
+            100: '#e7e7e9',
+            200: '#c6c7cb',
+            300: '#9d9fa6',
+            400: '#71737b',
+            500: '#54565e',
+            600: '#3f4048',
+            700: '#2e2f35',
+            800: '#1e1f24',
+            900: '#151519',
+            950: '#0b0b0d',
           },
-          sand: {
-            50: '#fbfbfa',
-            100: '#f7f8f6',
-            200: '#eef0ec',
+          paper: {
+            50: '#ffffff',
+            100: '#f8f8f8',
+            200: '#eeeeee',
           },
         },
         fontFamily: {
@@ -77,50 +93,50 @@
 <style type="text/tailwindcss">
   @layer components {
     .btn {
-      @apply inline-flex items-center justify-center gap-2 rounded-full font-medium text-sm px-5 py-3 transition-all duration-200 ease-out select-none disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-canopy-500;
+      @apply inline-flex items-center justify-center gap-2 rounded-full font-medium text-sm px-5 py-3 transition-all duration-200 ease-out select-none disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500;
     }
     .btn-primary {
-      @apply btn bg-ink-900 text-white hover:bg-canopy-600 active:scale-[0.97] shadow-soft hover:shadow-lift dark:bg-canopy-500 dark:text-ink-950 dark:hover:bg-canopy-400;
+      @apply btn bg-charcoal-900 text-white hover:bg-emerald-600 active:scale-[0.97] shadow-soft hover:shadow-lift dark:bg-emerald-500 dark:text-charcoal-950 dark:hover:bg-emerald-400;
     }
     .btn-accent {
-      @apply btn bg-canopy-500 text-ink-950 hover:bg-canopy-400 active:scale-[0.97] shadow-glow;
+      @apply btn bg-emerald-500 text-charcoal-950 hover:bg-emerald-400 active:scale-[0.97] shadow-glow;
     }
     .btn-secondary {
-      @apply btn bg-white text-ink-900 border border-ink-200 hover:border-ink-900 active:scale-[0.97] dark:bg-ink-800 dark:text-sand-100 dark:border-ink-700 dark:hover:border-canopy-400;
+      @apply btn bg-white text-charcoal-900 border border-charcoal-200 hover:border-charcoal-900 active:scale-[0.97] dark:bg-charcoal-800 dark:text-paper-100 dark:border-charcoal-700 dark:hover:border-emerald-400;
     }
     .btn-ghost {
-      @apply btn bg-transparent text-ink-700 hover:bg-ink-100 dark:text-ink-200 dark:hover:bg-ink-800;
+      @apply btn bg-transparent text-charcoal-700 hover:bg-charcoal-100 dark:text-charcoal-200 dark:hover:bg-charcoal-800;
     }
     .card {
-      @apply bg-white dark:bg-ink-900 border border-ink-100 dark:border-ink-800 rounded-2xl shadow-soft;
+      @apply bg-white dark:bg-charcoal-900 border border-charcoal-100 dark:border-charcoal-800 rounded-2xl shadow-soft;
     }
     .input {
-      @apply w-full rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 px-4 py-3 text-sm text-ink-900 dark:text-sand-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-canopy-500 focus:border-transparent transition-shadow duration-150;
+      @apply w-full rounded-xl border border-charcoal-200 dark:border-charcoal-700 bg-white dark:bg-charcoal-800 px-4 py-3 text-sm text-charcoal-900 dark:text-paper-100 placeholder:text-charcoal-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow duration-150;
     }
     .label {
-      @apply block text-xs font-semibold uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-2;
+      @apply block text-xs font-semibold uppercase tracking-wide text-charcoal-500 dark:text-charcoal-400 mb-2;
     }
     .badge {
       @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
     }
-    .badge-success { @apply badge bg-canopy-50 text-canopy-700 dark:bg-canopy-900/40 dark:text-canopy-300; }
-    .badge-neutral { @apply badge bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-300; }
+    .badge-success { @apply badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300; }
+    .badge-neutral { @apply badge bg-charcoal-100 text-charcoal-600 dark:bg-charcoal-800 dark:text-charcoal-300; }
     .badge-warning { @apply badge bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300; }
     .badge-danger  { @apply badge bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300; }
     .eyebrow {
-      @apply font-mono text-xs uppercase tracking-[0.18em] text-canopy-600 dark:text-canopy-400;
+      @apply font-mono text-xs uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400;
     }
     .section-heading {
-      @apply font-display text-3xl sm:text-4xl font-semibold tracking-tight text-ink-900 dark:text-sand-100;
+      @apply font-display text-3xl sm:text-4xl font-semibold tracking-tight text-charcoal-900 dark:text-paper-100;
     }
     .nav-link {
-      @apply text-sm font-medium text-ink-600 hover:text-ink-900 dark:text-ink-300 dark:hover:text-white transition-colors duration-150;
+      @apply text-sm font-medium text-charcoal-600 hover:text-charcoal-900 dark:text-charcoal-300 dark:hover:text-white transition-colors duration-150;
     }
     .sidebar-link {
-      @apply flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-900 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white transition-colors duration-150;
+      @apply flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-charcoal-500 hover:bg-charcoal-100 hover:text-charcoal-900 dark:text-charcoal-400 dark:hover:bg-charcoal-800 dark:hover:text-white transition-colors duration-150;
     }
     .sidebar-link-active {
-      @apply sidebar-link bg-canopy-50 text-canopy-700 hover:bg-canopy-50 hover:text-canopy-700 dark:bg-canopy-900/30 dark:text-canopy-300 dark:hover:bg-canopy-900/30 dark:hover:text-canopy-300;
+      @apply sidebar-link bg-emerald-50 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-300;
     }
   }
 </style>
@@ -128,7 +144,24 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% block head %}{% endblock %}
 </head>
-<body class="bg-sand-100 dark:bg-ink-950 text-ink-900 dark:text-sand-100 font-body antialiased transition-colors duration-300">
+<body class="bg-paper-100 dark:bg-charcoal-950 text-charcoal-900 dark:text-paper-100 font-body antialiased transition-colors duration-300">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-[90] w-full max-w-sm px-4 space-y-2" id="flash-host">
+    {% for category, message in messages %}
+    <div class="toast rounded-xl shadow-lift px-4 py-3 text-sm font-medium flex items-center gap-2
+      {{ 'bg-rose-600 text-white' if category == 'error' else 'bg-charcoal-900 text-white dark:bg-emerald-500 dark:text-charcoal-950' }}">
+      <i data-lucide="{{ 'alert-circle' if category == 'error' else 'check-circle' }}" class="w-4 h-4 shrink-0"></i>
+      <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <script>
+    setTimeout(() => { document.getElementById('flash-host')?.remove(); }, 5000);
+  </script>
+  {% endif %}
+{% endwith %}
 
 {% block body %}{% endblock %}
 

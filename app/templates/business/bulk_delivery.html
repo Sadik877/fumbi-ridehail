@@ -1,0 +1,49 @@
+{% extends "business/_base.html" %}
+{% block title %}Bulk delivery — {{ app_name }}{% endblock %}
+{% block dashboard_title %}Bulk delivery{% endblock %}
+
+{% block dashboard_content %}
+<form method="POST" class="card p-6 sm:p-8 space-y-6">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div>
+    <label class="label">Pickup address (same for all parcels)</label>
+    <input name="pickup_address" type="text" required class="input" placeholder="Warehouse or store address">
+  </div>
+
+  <div class="route-thread"></div>
+
+  <div id="deliveryRows" class="space-y-4">
+    <div class="delivery-row grid sm:grid-cols-4 gap-3 items-start">
+      <input name="dropoff_address[]" type="text" required class="input sm:col-span-2" placeholder="Drop-off address">
+      <input name="recipient_name[]" type="text" required class="input" placeholder="Recipient name">
+      <input name="recipient_phone[]" type="tel" required class="input" placeholder="Recipient phone">
+      <select name="parcel_size[]" class="input sm:col-span-4 sm:w-48">
+        <option value="envelope">Envelope</option>
+        <option value="parcel" selected>Parcel</option>
+        <option value="large_box">Large box</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="button" onclick="addDeliveryRow()" class="btn-secondary">
+    <i data-lucide="plus" class="w-4 h-4"></i> Add another parcel
+  </button>
+
+  <div class="route-thread"></div>
+
+  <button type="submit" class="btn-primary">Create bulk delivery <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function addDeliveryRow() {
+    const container = document.getElementById('deliveryRows');
+    const row = container.firstElementChild.cloneNode(true);
+    row.querySelectorAll('input').forEach((el) => (el.value = ''));
+    row.querySelector('select').selectedIndex = 1;
+    container.appendChild(row);
+  }
+</script>
+{% endblock %}
