@@ -1,11 +1,30 @@
+# Render Blueprint. Use this by going to Render → New + → Blueprint and
+# pointing it at this repo — it provisions the web service AND the
+# Postgres database together, with DATABASE_URL wired automatically.
+#
+# If you instead configure the web service manually in the dashboard,
+# render.yaml is NOT read — Settings → Build/Start Command in the
+# dashboard silently override it. Manual configuration must match what's
+# below by hand (see README's "Deploying to Render" section).
 services:
   - type: web
     name: movex-web
     runtime: python
-    plan: starter
-    buildCommand: "pip install -r requirements.txt"
+    plan: free   # switch to "starter" (or higher) for production — the
+                 # free plan spins the instance down after inactivity
+    buildCommand: >-
+      pip install -r requirements.txt &&
+      flask --app wsgi init-db &&
+      flask --app wsgi seed-db
+    # NOTE: init-db calls db.create_all() — it creates tables that don't
+    # exist yet but can't apply later schema changes (new columns, etc).
+    # Once real Flask-Migrate migrations exist and are committed
+    # (flask db init && flask db migrate && commit the migrations/
+    # folder), replace the buildCommand above with just
+    # "pip install -r requirements.txt" and uncomment preDeployCommand
+    # below instead.
+    # preDeployCommand: "flask --app wsgi db upgrade"
     startCommand: "gunicorn -c gunicorn_conf.py wsgi:app"
-    preDeployCommand: "flask --app wsgi db upgrade"
     envVars:
       - key: FLASK_ENV
         value: production
@@ -19,26 +38,36 @@ services:
           property: connectionString
       - key: PYTHON_VERSION
         value: 3.12.4
-      # Set these manually in the Render dashboard once you have them —
-      # left unset, the app runs fine but payments/email/maps fall back
-      # to their "not configured" / logging behavior (see app/config.py):
-      - key: MAIL_SUPPRESS_SEND
-        value: "true"
-      - key: FLUTTERWAVE_SECRET_KEY
-        sync: false
-      - key: PAYSTACK_SECRET_KEY
-        sync: false
-      - key: MAIL_USERNAME
-        sync: false
-      - key: MAIL_PASSWORD
-        sync: false
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+      # Everything below is optional — left unset, the app runs fine and
+      # these features fall back to their documented "not configured"
+      # behavior (see app/config.py):
+      - key: MAIL_SUPPRESS_SEND
+        value: "true"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: FLUTTERWAVE_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
 
 databases:
+  # Using Render's own managed Postgres here. If you'd rather use Supabase
+  # as the database instead, delete this whole `databases:` block, delete
+  # the DATABASE_URL entry above, and add your own instead:
+  #   - key: DATABASE_URL
+  #     sync: false          (paste Supabase's connection string manually
+  #                            in the dashboard once the service exists)
   - name: movex-db
-    plan: starter
+    plan: free
     databaseName: movex
     user: movex
